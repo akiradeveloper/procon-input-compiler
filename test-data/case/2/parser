@@ -1,0 +1,2 @@
+n: int, m: int
+a: [int; n+m]
