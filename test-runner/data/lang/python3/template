@@ -1,0 +1,6 @@
+from sys import stdin
+input = stdin.readline
+
+{ parser }
+
+{ checker }
