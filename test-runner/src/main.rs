@@ -42,7 +42,7 @@ impl Task<'_> {
     fn exec(self) -> Result<()> {
         let parser = {
             let parser = read(&self.case.parser)?;
-            procon_input::compile(&parser)?
+            procon_input_compiler::compile(&parser)?
         };
         let checker = { read(self.checker)? };
         let exec_content = {
