@@ -1,0 +1,3 @@
+n: int, m: int
+v: [(float); n]
+e: [(int0,int0,float); m]
