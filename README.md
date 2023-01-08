@@ -1,1 +1,1 @@
-# procon-input
+# procon-input-compiler
