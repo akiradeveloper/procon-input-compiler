@@ -55,12 +55,8 @@ impl Emit for Type {
 impl Emit for TupleLike {
     fn emit(&self, slice: &str) -> String {
         match self {
-            TupleLike::Array(Array(ty, _)) => {
-                format!("[{} for x in {slice}]", ty.emit("[x]"))
-            }
-            TupleLike::List(List(ty)) => {
-                format!("[{} for x in {slice}]", ty.emit("[x]"))
-            }
+            TupleLike::Array(x) => x.emit(slice),
+            TupleLike::List(x) => x.emit(slice),
             TupleLike::Tuple(tuple) => {
                 let mut inner = vec![];
                 let mut head = Arity::n(0);
