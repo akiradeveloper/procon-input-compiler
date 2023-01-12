@@ -1,9 +1,12 @@
+use emit::emit;
+
 mod ast;
 mod emit;
 mod parse;
 
 pub enum Lang {
     Python3,
+    Cpp,
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
@@ -11,6 +14,7 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
     let out = parse::parse(input.as_ref()).map_err(|e| e.to_owned())?.1;
     let out = match lang {
         Lang::Python3 => emit::emit::<emit::python3::Python3>(out),
+        Lang::Cpp => emit::emit::<emit::cpp::Cpp>(out),
     };
     Ok(out)
 }

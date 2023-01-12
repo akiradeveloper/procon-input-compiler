@@ -43,7 +43,11 @@ impl Task<'_> {
     fn exec(self) -> Result<()> {
         let parser = {
             let parser = read(&self.case.parser)?;
-            Compiler::compile(Compiler::Lang::Python3, &parser)?
+            match self.name.as_ref() {
+                "python" => Compiler::compile(Compiler::Lang::Python3, &parser)?,
+                "cpp" => Compiler::compile(Compiler::Lang::Cpp, &parser)?,
+                _ => unreachable!(),
+            }
         };
         let checker = { read(self.checker)? };
         let exec_content = {
