@@ -8,7 +8,7 @@ mod arity;
 use arity::*;
 
 pub mod python;
-pub mod python_testing;
+pub mod python3;
 
 #[derive(Clone)]
 pub struct Bind(pub String);
