@@ -18,12 +18,7 @@ impl Lang for Python3 {
         vec![code]
     }
     fn array(bind: Bind, ast: ast::Array, source: Slice) -> Code {
-        let Slice(slice_name, range) = source;
-        let slice = format!("{}[{}:{}]", slice_name, range.0, range.1);
-        let ty = ast.0;
-        let rhs = format!("[{} for x in {slice}]", unit_type_convert(ty, "x"));
-        let code = format!("{bind} = {rhs}");
-        vec![code]
+        Self::list(bind, ast::List(ast.0), source)
     }
     fn list(bind: Bind, ast: ast::List, source: Slice) -> Code {
         let Slice(slice_name, range) = source;

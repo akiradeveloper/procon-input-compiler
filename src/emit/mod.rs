@@ -7,6 +7,7 @@ use crate::ast::*;
 mod arity;
 use arity::*;
 
+pub mod cpp;
 pub mod python;
 pub mod python3;
 
