@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use procon_input_compiler as Compiler;
 
 #[derive(Debug)]
 struct Case {
@@ -42,7 +43,7 @@ impl Task<'_> {
     fn exec(self) -> Result<()> {
         let parser = {
             let parser = read(&self.case.parser)?;
-            procon_input_compiler::compile(&parser)?
+            Compiler::compile(Compiler::Lang::Python, &parser)?
         };
         let checker = { read(self.checker)? };
         let exec_content = {
