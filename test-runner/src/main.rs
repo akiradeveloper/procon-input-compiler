@@ -44,8 +44,8 @@ impl Task<'_> {
         let parser = {
             let parser = read(&self.case.parser)?;
             match self.name.as_ref() {
-                "python" => Compiler::compile(Compiler::Lang::Python3, &parser)?,
-                "cpp" => Compiler::compile(Compiler::Lang::Cpp11, &parser)?,
+                "python3" => Compiler::compile(Compiler::Lang::Python3, &parser)?,
+                "cpp11" => Compiler::compile(Compiler::Lang::Cpp11, &parser)?,
                 _ => unreachable!(),
             }
         };
