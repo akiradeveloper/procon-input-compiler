@@ -49,7 +49,9 @@ impl Lang for Cpp11 {
         let ty1 = typing::list(&ast);
         let ty2 = typing::unit_type(&ast.0);
         code.push(format!("{ty1} {bind};"));
-        code.push(format!("for (int i={i}; i<{j}; i++) {{ {ty2} s; std::istringstream ss({xs}[i]); ss >> s; {bind}.push_back(s); }}"));
+        code.push(format!("for (int i={i}; i<{j}; i++) {{"));
+        code.push(format!("\t{ty2} s; std::istringstream ss({xs}[i]); ss >> s; {bind}.push_back(s);"));
+        code.push(format!("}}"));
         code
     }
     fn matrix(bind: Bind, ast: ast::Matrix) -> Code {
