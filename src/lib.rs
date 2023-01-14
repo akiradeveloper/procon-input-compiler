@@ -5,6 +5,7 @@ mod parse;
 pub enum Lang {
     Python3,
     Cpp11,
+    Nim,
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
@@ -13,6 +14,7 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
     let out = match lang {
         Lang::Python3 => emit::emit::<emit::python3::Python3>(out),
         Lang::Cpp11 => emit::emit::<emit::cpp11::Cpp11>(out),
+        Lang::Nim => emit::emit::<emit::nim::Nim>(out),
     };
     Ok(out)
 }

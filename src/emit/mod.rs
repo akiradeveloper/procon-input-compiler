@@ -8,6 +8,7 @@ mod arity;
 use arity::*;
 
 pub mod cpp11;
+pub mod nim;
 pub mod python3;
 
 #[derive(Clone)]
