@@ -98,7 +98,8 @@ fn write(path: &Path, data: String) -> Result<()> {
 
 fn main() -> anyhow::Result<()> {
     let mut cur = std::env::current_dir()?;
-    cur.push("test-data");
+    cur.push("test-runner");
+    cur.push("data");
 
     let mut case: BTreeMap<u64, Case> = BTreeMap::new();
     cur.push("case");
