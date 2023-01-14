@@ -7,8 +7,8 @@ use crate::ast::*;
 mod arity;
 use arity::*;
 
-pub mod python3;
 pub mod cpp11;
+pub mod python3;
 
 #[derive(Clone)]
 pub struct Bind(pub String);
@@ -46,6 +46,11 @@ pub fn new_var() -> Bind {
 }
 
 pub type Code = Vec<String>;
+fn append_code(dest: &mut Code, indent: &str, src: Code) {
+    for line in src {
+        dest.push(format!("{indent}{line}"));
+    }
+}
 
 pub trait Lang {
     fn read_line(bind: Bind) -> (Code, Index);

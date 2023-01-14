@@ -61,14 +61,14 @@ impl Lang for Cpp11 {
         code.push(format!("for (int i=0; i<{n}; i++) {{"));
 
         let line = new_var();
-        let (mut read_line, m) = Self::read_line(line.clone());
-        code.append(&mut read_line);
+        let (read_line, m) = Self::read_line(line.clone());
+        append_code(&mut code, "\t", read_line);
 
         let tuple = new_var();
         let slice = Slice(line, Range(Index::zero(), m));
-        let mut inner_code = Self::tuple_like(tuple.clone(), ast.0, slice);
-        code.append(&mut inner_code);
-        code.push(format!("{bind}.push_back({tuple});"));
+        let inner_code = Self::tuple_like(tuple.clone(), ast.0, slice);
+        append_code(&mut code, "\t", inner_code);
+        code.push(format!("\t{bind}.push_back({tuple});"));
 
         code.push(format!("}}"));
         code
