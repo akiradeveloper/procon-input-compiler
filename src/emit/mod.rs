@@ -54,12 +54,12 @@ fn append_code(dest: &mut Code, indent: &str, src: Code) {
 
 pub trait Lang {
     fn read_line(bind: Bind) -> (Code, Index);
-    fn unit_type(bind: Bind, ast: ast::UnitType, source: Slice) -> Code;
-    fn array(bind: Bind, ast: ast::Array, source: Slice) -> Code;
-    fn list(bind: Bind, ast: ast::List, source: Slice) -> Code;
-    fn matrix(bind: Bind, ast: ast::Matrix) -> Code;
-    fn tuple(bind: Bind, elems: Vec<Bind>) -> Code;
-    fn tuple_like(bind: Bind, ast: ast::TupleLike, source: Slice) -> Code {
+    fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code;
+    fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code;
+    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code;
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code;
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code;
+    fn tuple_like(bind: Bind, ast: &ast::TupleLike, source: Slice) -> Code {
         match ast {
             ast::TupleLike::Array(ast) => Self::array(bind, ast, source),
             ast::TupleLike::List(ast) => Self::list(bind, ast, source),
@@ -69,7 +69,7 @@ pub trait Lang {
                 let mut inner = vec![];
                 let mut head = fi;
                 for elem in elems {
-                    match elem {
+                    match &elem {
                         TupleElem::UnitType(x) => {
                             let last = add_or(head.clone(), x.arity(), la.clone());
                             let ran = Range(head, last.clone());
@@ -77,7 +77,7 @@ pub trait Lang {
                             let mut code =
                                 Self::unit_type(var.clone(), x, Slice(line_name.clone(), ran));
                             out.append(&mut code);
-                            inner.push(var);
+                            inner.push((elem, var));
                             head = last;
                         }
                         TupleElem::Array(x) => {
@@ -87,7 +87,7 @@ pub trait Lang {
                             let mut code =
                                 Self::array(var.clone(), x, Slice(line_name.clone(), ran));
                             out.append(&mut code);
-                            inner.push(var);
+                            inner.push((elem, var));
                             head = last;
                         }
                         TupleElem::List(x) => {
@@ -97,7 +97,7 @@ pub trait Lang {
                             let mut code =
                                 Self::list(var.clone(), x, Slice(line_name.clone(), ran));
                             out.append(&mut code);
-                            inner.push(var);
+                            inner.push((elem, var));
                             head = last;
                         }
                     }
@@ -134,7 +134,7 @@ pub fn emit<L: Lang>(root: ast::Root) -> String {
             let mut head = Index::zero();
             for Definition(var, typ) in line.0 {
                 let var = Bind(var.0);
-                match typ {
+                match &typ {
                     Type::UnitType(x) => {
                         let last = add_or(head.clone(), x.arity(), len.clone());
                         let ran = Range(head, last.clone());
@@ -155,7 +155,7 @@ pub fn emit<L: Lang>(root: ast::Root) -> String {
         } else {
             for Definition(var, typ) in line.0 {
                 let var = Bind(var.0);
-                match typ {
+                match &typ {
                     Type::Matrix(x) => {
                         let mut code = L::matrix(var, x);
                         out.append(&mut code);

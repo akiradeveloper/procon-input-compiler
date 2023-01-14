@@ -10,27 +10,32 @@ impl Lang for Python3 {
         out.push(code);
         (out, len)
     }
-    fn unit_type(bind: Bind, ast: ast::UnitType, source: Slice) -> Code {
+    fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code {
         let Slice(slice_name, range) = source;
         let v = format!("{}[{}:{}][0]", slice_name, range.0, range.1);
         let rhs = format!("{}", unit_type_convert(ast, &v));
         let code = format!("{bind} = {rhs}");
         vec![code]
     }
-    fn array(bind: Bind, ast: ast::Array, source: Slice) -> Code {
-        Self::list(bind, ast::List(ast.0), source)
-    }
-    fn list(bind: Bind, ast: ast::List, source: Slice) -> Code {
+    fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code {
         let Slice(slice_name, range) = source;
         let slice = format!("{}[{}:{}]", slice_name, range.0, range.1);
-        let ty = ast.0;
+        let ty = &ast.0;
         let rhs = format!("[{} for x in {slice}]", unit_type_convert(ty, "x"));
         let code = format!("{bind} = {rhs}");
         vec![code]
     }
-    fn matrix(bind: Bind, ast: ast::Matrix) -> Code {
-        let ty = ast.0;
-        let len = ast.1;
+    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
+        let Slice(slice_name, range) = source;
+        let slice = format!("{}[{}:{}]", slice_name, range.0, range.1);
+        let ty = &ast.0;
+        let rhs = format!("[{} for x in {slice}]", unit_type_convert(ty, "x"));
+        let code = format!("{bind} = {rhs}");
+        vec![code]
+    }
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code {
+        let ty = &ast.0;
+        let len = &ast.1;
         let rep = &len.0;
         let mut out = vec![];
         out.push(format!("{bind} = []"));
@@ -47,9 +52,9 @@ impl Lang for Python3 {
         out.push(format!("\t{bind}.append({eval_var})"));
         out
     }
-    fn tuple(bind: Bind, elems: Vec<Bind>) -> Code {
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
         let mut inner = vec![];
-        for e in elems {
+        for (_, e) in elems {
             inner.push(e.0);
         }
         let inner = inner.join(",");
@@ -58,7 +63,7 @@ impl Lang for Python3 {
     }
 }
 
-fn unit_type_convert(ty: ast::UnitType, v: &str) -> String {
+fn unit_type_convert(ty: &ast::UnitType, v: &str) -> String {
     match ty {
         ast::UnitType::Int => {
             format!("int({v})")

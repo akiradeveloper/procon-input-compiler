@@ -21,7 +21,7 @@ impl Lang for Cpp11 {
         let size = Index(n.0);
         (code, size)
     }
-    fn unit_type(bind: Bind, ast: ast::UnitType, source: Slice) -> Code {
+    fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code {
         let mut code = vec![];
         let Slice(xs, range) = source;
         let i = range.0;
@@ -38,10 +38,22 @@ impl Lang for Cpp11 {
         }
         code
     }
-    fn array(bind: Bind, ast: ast::Array, source: Slice) -> Code {
-        Self::list(bind, ast::List(ast.0), source)
+    fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code {
+        let mut code = vec![];
+        let Slice(xs, range) = source;
+        let i = range.0;
+        let j = range.1;
+        let ty1 = typing::array(&ast);
+        let ty2 = typing::unit_type(&ast.0);
+        code.push(format!("{ty1} {bind};"));
+        code.push(format!("for (int i={i}; i<{j}; i++) {{"));
+        code.push(format!(
+            "\t{ty2} s; std::istringstream ss({xs}[i]); ss >> s; {bind}.push_back(s);"
+        ));
+        code.push(format!("}}"));
+        code
     }
-    fn list(bind: Bind, ast: ast::List, source: Slice) -> Code {
+    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
         let mut code = vec![];
         let Slice(xs, range) = source;
         let i = range.0;
@@ -50,15 +62,17 @@ impl Lang for Cpp11 {
         let ty2 = typing::unit_type(&ast.0);
         code.push(format!("{ty1} {bind};"));
         code.push(format!("for (int i={i}; i<{j}; i++) {{"));
-        code.push(format!("\t{ty2} s; std::istringstream ss({xs}[i]); ss >> s; {bind}.push_back(s);"));
+        code.push(format!(
+            "\t{ty2} s; std::istringstream ss({xs}[i]); ss >> s; {bind}.push_back(s);"
+        ));
         code.push(format!("}}"));
         code
     }
-    fn matrix(bind: Bind, ast: ast::Matrix) -> Code {
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code {
         let mut code = vec![];
         let ty = format!("std::vector<{}>", typing::tuple_like(&ast.0));
-        let n = ast.1;
-        let n = Index(n.0);
+        let n = &ast.1;
+        let n = Index(n.0.clone());
         code.push(format!("{ty} {bind};"));
         code.push(format!("for (int i=0; i<{n}; i++) {{"));
 
@@ -68,17 +82,17 @@ impl Lang for Cpp11 {
 
         let tuple = new_var();
         let slice = Slice(line, Range(Index::zero(), m));
-        let inner_code = Self::tuple_like(tuple.clone(), ast.0, slice);
+        let inner_code = Self::tuple_like(tuple.clone(), &ast.0, slice);
         append_code(&mut code, "\t", inner_code);
         code.push(format!("\t{bind}.push_back({tuple});"));
 
         code.push(format!("}}"));
         code
     }
-    fn tuple(bind: Bind, elems: Vec<Bind>) -> Code {
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
         let mut code = vec![];
         let mut inner = vec![];
-        for e in elems {
+        for (_, e) in elems {
             inner.push(e.0);
         }
         let inner = inner.join(", ");
