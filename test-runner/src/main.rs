@@ -46,6 +46,7 @@ impl Task<'_> {
             match self.name.as_ref() {
                 "python3" => Compiler::compile(Compiler::Lang::Python3, &parser)?,
                 "cpp11" => Compiler::compile(Compiler::Lang::Cpp11, &parser)?,
+                "nim" => Compiler::compile(Compiler::Lang::Nim, &parser)?,
                 _ => unreachable!(),
             }
         };
