@@ -32,18 +32,10 @@ impl Index {
         Index("0".to_string())
     }
 }
-impl std::ops::Add for Index {
-    type Output = Index;
-    fn add(self, rhs: Self) -> Self::Output {
-        match (&self, &rhs) {
-            (Index(x), Index(y)) => Index(format!("({x} + {y})")),
-        }
-    }
-}
-fn unwrap_or(x: Arity, or: Index) -> Index {
-    match x {
-        Arity::Literal(x) => Index(x),
-        Arity::Inf => or,
+fn add_or(x: Index, y: Arity, or: Index) -> Index {
+    match (x, y) {
+        (Index(x), Arity::Literal(y)) => Index(format!("({x} + {y})")),
+        (_, Arity::Inf) => or,
     }
 }
 
@@ -75,7 +67,7 @@ pub trait Lang {
                 for elem in elems {
                     match elem {
                         TupleElem::UnitType(x) => {
-                            let last = head.clone() + unwrap_or(x.arity(), la.clone());
+                            let last = add_or(head.clone(), x.arity(), la.clone());
                             let ran = Range(head, last.clone());
                             let var = new_var();
                             let mut code =
@@ -85,7 +77,7 @@ pub trait Lang {
                             head = last;
                         }
                         TupleElem::Array(x) => {
-                            let last = head.clone() + unwrap_or(x.arity(), la.clone());
+                            let last = add_or(head.clone(), x.arity(), la.clone());
                             let ran = Range(head, last.clone());
                             let var = new_var();
                             let mut code =
@@ -95,7 +87,7 @@ pub trait Lang {
                             head = last;
                         }
                         TupleElem::List(x) => {
-                            let last = head.clone() + unwrap_or(x.arity(), la.clone());
+                            let last = add_or(head.clone(), x.arity(), la.clone());
                             let ran = Range(head, last.clone());
                             let var = new_var();
                             let mut code =
@@ -140,14 +132,14 @@ pub fn emit<L: Lang>(root: ast::Root) -> String {
                 let var = Bind(var.0);
                 match typ {
                     Type::UnitType(x) => {
-                        let last = head.clone() + unwrap_or(x.arity(), len.clone());
+                        let last = add_or(head.clone(), x.arity(), len.clone());
                         let ran = Range(head, last.clone());
                         let mut code = L::unit_type(var, x, Slice(line_var.clone(), ran));
                         out.append(&mut code);
                         head = last;
                     }
                     Type::TupleLike(x) => {
-                        let last = head.clone() + unwrap_or(x.arity(), len.clone());
+                        let last = add_or(head.clone(), x.arity(), len.clone());
                         let ran = Range(head, last.clone());
                         let mut code = L::tuple_like(var, x, Slice(line_var.clone(), ran));
                         out.append(&mut code);
