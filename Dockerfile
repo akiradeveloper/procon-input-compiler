@@ -5,4 +5,5 @@ WORKDIR '/work'
 RUN apt-get update && apt-get install -y \
 	python \
 	build-essential \
-	nim
+	nim \
+	ruby

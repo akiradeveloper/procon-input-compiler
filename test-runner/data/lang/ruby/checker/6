@@ -1,0 +1,2 @@
+assert(n==3)
+assert(a==[["jack", [1]], ["kevin", [0,2]], ["henry", [0,1]]])

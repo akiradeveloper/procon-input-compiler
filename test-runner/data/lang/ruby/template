@@ -1,0 +1,7 @@
+def assert(pred)
+  raise "Assertion failed!" unless pred
+end
+
+{ parser }
+
+{ checker }
