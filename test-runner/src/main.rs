@@ -47,6 +47,7 @@ impl Task<'_> {
                 "python3" => Compiler::compile(Compiler::Lang::Python3, &parser)?,
                 "cpp11" => Compiler::compile(Compiler::Lang::Cpp11, &parser)?,
                 "nim" => Compiler::compile(Compiler::Lang::Nim, &parser)?,
+                "ruby" => Compiler::compile(Compiler::Lang::Ruby, &parser)?,
                 _ => unreachable!(),
             }
         };

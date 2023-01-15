@@ -10,6 +10,7 @@ use arity::*;
 pub mod cpp11;
 pub mod nim;
 pub mod python3;
+pub mod ruby;
 
 #[derive(Clone)]
 pub struct Bind(pub String);
