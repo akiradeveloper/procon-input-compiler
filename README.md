@@ -67,7 +67,7 @@ Type := UnitType | TupleLike | Matrix
 ```mermaid
 graph LR
   P(Parser)
-  subgraph emit
+  subgraph codegen
     EC(Common Layer)
     EL(Language Specific)
   end
