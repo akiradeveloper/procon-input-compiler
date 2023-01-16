@@ -92,11 +92,16 @@ impl Lang for Cpp11 {
     fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
         let mut code = vec![];
         let mut inner = vec![];
+        let n = elems.len();
         for (_, e) in elems {
             inner.push(e.0);
         }
         let inner = inner.join(", ");
-        code.push(format!("auto {bind} = std::make_tuple({inner});"));
+        if n == 1 {
+            code.push(format!("auto {bind} = {inner};"));
+        } else {
+            code.push(format!("auto {bind} = std::make_tuple({inner});"));
+        }
         code
     }
 }
@@ -129,6 +134,7 @@ mod typing {
     }
     pub fn tuple(ty: &ast::Tuple) -> Type {
         let mut inner = vec![];
+        let n = ty.0.len();
         for e in &ty.0 {
             let ty = match e {
                 TupleElem::Array(x) => array(x),
@@ -138,6 +144,10 @@ mod typing {
             inner.push(ty);
         }
         let inner = inner.join(",");
-        format!("std::tuple<{inner}>")
+        if n == 1 {
+            format!("{inner}")
+        } else {
+            format!("std::tuple<{inner}>")
+        }
     }
 }

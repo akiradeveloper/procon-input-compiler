@@ -63,11 +63,16 @@ impl Lang for Ruby {
     }
     fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
         let mut inner = vec![];
+        let n = elems.len();
         for (_, e) in elems {
             inner.push(e.0);
         }
         let inner = inner.join(", ");
-        let code = format!("{bind} = [{inner}]");
+        let code = if n == 1 {
+            format!("{bind} = {inner}")
+        } else {
+            format!("{bind} = [{inner}]")
+        };
         vec![code]
     }
 }
