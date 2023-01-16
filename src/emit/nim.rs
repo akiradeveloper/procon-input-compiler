@@ -74,11 +74,16 @@ impl Lang for Nim {
     fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
         let mut code = vec![];
         let mut inner = vec![];
+        let n = elems.len();
         for (_, var) in elems {
             inner.push(var.0);
         }
         let inner = inner.join(",");
-        code.push(format!("let {bind} = ({inner})"));
+        if n == 1 {
+            code.push(format!("let {bind} = {inner}"));
+        } else {
+            code.push(format!("let {bind} = ({inner})"));
+        }
         code
     }
 }
@@ -105,6 +110,7 @@ mod typing {
     }
     fn tuple(ty: &ast::Tuple) -> Type {
         let mut inner = vec![];
+        let n = ty.0.len();
         for e in &ty.0 {
             let ty = match e {
                 TupleElem::Array(x) => array(x),
@@ -114,7 +120,11 @@ mod typing {
             inner.push(ty);
         }
         let inner = inner.join(", ");
-        format!("({inner})")
+        if n == 1 {
+            format!("{inner}")
+        } else {
+            format!("({inner})")
+        }
     }
     pub fn tuple_like(ty: &ast::TupleLike) -> Type {
         match ty {
