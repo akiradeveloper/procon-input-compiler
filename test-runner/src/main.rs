@@ -98,7 +98,16 @@ fn write(path: &Path, data: String) -> Result<()> {
     Ok(())
 }
 
+use clap::Parser;
+#[derive(Parser, Debug)]
+struct Opts {
+    #[arg(long)]
+    lang: Option<String>,
+}
+
 fn main() -> anyhow::Result<()> {
+    let opts: Opts = Opts::parse();
+
     let mut cur = std::env::current_dir()?;
     cur.push("test-runner");
     cur.push("data");
@@ -149,14 +158,24 @@ fn main() -> anyhow::Result<()> {
             }
             out
         };
-        lang.insert(
-            name,
-            Lang {
-                runner: path.join("runner"),
-                template: path.join("template"),
-                checker,
-            },
-        );
+        let do_insert = || {
+            let name = name.clone();
+            lang.insert(
+                name,
+                Lang {
+                    runner: path.join("runner"),
+                    template: path.join("template"),
+                    checker,
+                },
+            );
+        };
+        if let Some(lang) = &opts.lang {
+            if &name == lang {
+                do_insert();
+            }
+        } else {
+            do_insert();
+        }
     }
     cur.pop();
 
