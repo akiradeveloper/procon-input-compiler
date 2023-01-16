@@ -11,3 +11,4 @@ anyhow = "1"
 colored = "1"
 serde = { version = "1", features = ["derive"] }
 procon-input-compiler = { path = "../" }
+clap = { version = "4", features = ["derive"] }
