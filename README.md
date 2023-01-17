@@ -33,15 +33,15 @@ This is what Procon Input does.
 
 - Supported languages: Python3, C++11, Nim, Ruby
 
-|name | syntax | Python3 | C++11 | Nim | Ruby | 
-|-|-|-|-|-|-|
-|integer number|int|`int`|`int`|`int`|`Integer`|
-|floating number|float|`float`|`double`|`float`|`Float`|
-|string|str|`str`|`string`|`string`|`String`|
-|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|
-|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|
-|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|
-|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|
+|name | syntax | Python3 | C++11 | Nim | Ruby | Java |
+|-|-|-|-|-|-|-|
+|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|
+|floating number|float|`float`|`double`|`float`|`Float`|`Float`|
+|string|str|`str`|`string`|`string`|`String`|`String`|
+|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supp|
+|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|
+|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|
+|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`
 
 ## Syntax
 
