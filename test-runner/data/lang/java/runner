@@ -1,0 +1,1 @@
+FILE=$@; cp $FILE /tmp/Main.java; javac /tmp/Main.java; java -cp /tmp Main
