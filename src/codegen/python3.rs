@@ -33,7 +33,7 @@ impl Lang for Python3 {
         let code = format!("{bind} = {rhs}");
         vec![code]
     }
-    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code {
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let ty = &ast.0;
         let len = &ast.1;
         let rep = &len.0;
@@ -45,21 +45,21 @@ impl Lang for Python3 {
         let ran = Range(Index::zero(), Index(n));
         let slice = Slice(Bind("xs".to_string()), ran);
         let eval_var = new_var();
-        let eval_code = Self::tuple_like(eval_var.clone(), ty, slice);
+        let eval_code = Self::tuple_like(eval_var.clone(), ty, slice)?;
         for e in eval_code {
             out.push(format!("\t{e}"));
         }
         out.push(format!("\t{bind}.append({eval_var})"));
-        out
+        Ok(out)
     }
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, super::Error> {
         let mut inner = vec![];
         for (_, e) in elems {
             inner.push(e.0);
         }
         let inner = inner.join(",");
         let code = format!("{bind} = ({inner})");
-        vec![code]
+        Ok(vec![code])
     }
 }
 

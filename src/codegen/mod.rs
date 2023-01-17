@@ -54,17 +54,24 @@ fn append_code(dest: &mut Code, indent: &str, src: Code) {
     }
 }
 
+use thiserror::Error;
+#[derive(Error, Debug)]
+enum Error {
+    #[error("Tuple isn't supported.")]
+    TupleNotSupported,
+}
+
 pub trait Lang {
     fn read_line(bind: Bind) -> (Code, Index);
     fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code;
     fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code;
     fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code;
-    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code;
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code;
-    fn tuple_like(bind: Bind, ast: &ast::TupleLike, source: Slice) -> Code {
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error>;
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error>;
+    fn tuple_like(bind: Bind, ast: &ast::TupleLike, source: Slice) -> Result<Code, Error> {
         match ast {
-            ast::TupleLike::Array(ast) => Self::array(bind, ast, source),
-            ast::TupleLike::List(ast) => Self::list(bind, ast, source),
+            ast::TupleLike::Array(ast) => Ok(Self::array(bind, ast, source)),
+            ast::TupleLike::List(ast) => Ok(Self::list(bind, ast, source)),
             ast::TupleLike::Tuple(ast::Tuple(elems)) => {
                 let Slice(line_name, Range(fi, la)) = source;
                 let mut out = vec![];
@@ -104,15 +111,15 @@ pub trait Lang {
                         }
                     }
                 }
-                let mut code = Self::tuple(bind, inner);
+                let mut code = Self::tuple(bind, inner)?;
                 out.append(&mut code);
-                out
+                Ok(out)
             }
         }
     }
 }
 
-pub fn emit<L: Lang>(root: ast::Root) -> String {
+pub fn emit<L: Lang>(root: ast::Root) -> anyhow::Result<String> {
     COUNTER.store(0, Ordering::SeqCst);
 
     let mut out: Vec<String> = vec![];
@@ -147,7 +154,7 @@ pub fn emit<L: Lang>(root: ast::Root) -> String {
                     Type::TupleLike(x) => {
                         let last = add_or(head.clone(), x.arity(), len.clone());
                         let ran = Range(head, last.clone());
-                        let mut code = L::tuple_like(var, x, Slice(line_var.clone(), ran));
+                        let mut code = L::tuple_like(var, x, Slice(line_var.clone(), ran))?;
                         out.append(&mut code);
                         head = last;
                     }
@@ -159,7 +166,7 @@ pub fn emit<L: Lang>(root: ast::Root) -> String {
                 let var = Bind(var.0);
                 match &typ {
                     Type::Matrix(x) => {
-                        let mut code = L::matrix(var, x);
+                        let mut code = L::matrix(var, x)?;
                         out.append(&mut code);
                     }
                     _ => unreachable!(),
@@ -167,5 +174,5 @@ pub fn emit<L: Lang>(root: ast::Root) -> String {
             }
         }
     }
-    out.join("\n")
+    Ok(out.join("\n"))
 }

@@ -47,7 +47,7 @@ impl Lang for Nim {
         code.push(format!("let {bind} = {xs}[{i}..<{j}].map({mapper})"));
         code
     }
-    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code {
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let mut code = vec![];
         let inner_ty = typing::tuple_like(&ast.0);
         let len = &ast.1 .0;
@@ -64,14 +64,14 @@ impl Lang for Nim {
             t.clone(),
             &ast.0,
             Slice(line, Range(Index::zero(), Index(format!("{n}")))),
-        );
+        )?;
         inner_code.append(&mut e);
         inner_code.push(format!("{bind}.add({t})"));
 
         append_code(&mut code, "    ", inner_code);
-        code
+        Ok(code)
     }
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, super::Error> {
         let mut code = vec![];
         let mut inner = vec![];
         let n = elems.len();
@@ -84,7 +84,7 @@ impl Lang for Nim {
         } else {
             code.push(format!("let {bind} = ({inner})"));
         }
-        code
+        Ok(code)
     }
 }
 type Type = String;

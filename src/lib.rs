@@ -17,6 +17,6 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
         Lang::Cpp11 => codegen::emit::<codegen::cpp11::Cpp11>(out),
         Lang::Nim => codegen::emit::<codegen::nim::Nim>(out),
         Lang::Ruby => codegen::emit::<codegen::ruby::Ruby>(out),
-    };
+    }?;
     Ok(out)
 }
