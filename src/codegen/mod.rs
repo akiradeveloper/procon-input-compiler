@@ -8,6 +8,7 @@ mod arity;
 use arity::*;
 
 pub mod cpp11;
+pub mod java;
 pub mod nim;
 pub mod python3;
 pub mod ruby;
@@ -56,7 +57,7 @@ fn append_code(dest: &mut Code, indent: &str, src: Code) {
 
 use thiserror::Error;
 #[derive(Error, Debug)]
-enum Error {
+pub enum Error {
     #[error("Tuple isn't supported.")]
     TupleNotSupported,
 }

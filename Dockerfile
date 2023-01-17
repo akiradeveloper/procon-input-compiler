@@ -6,4 +6,5 @@ RUN apt-get update && apt-get install -y \
 	python \
 	build-essential \
 	nim \
-	ruby
+	ruby \
+	default-jdk
