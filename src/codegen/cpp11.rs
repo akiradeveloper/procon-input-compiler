@@ -46,9 +46,10 @@ impl Lang for Cpp11 {
         let ty1 = typing::array(&ast);
         let ty2 = typing::unit_type(&ast.0);
         code.push(format!("{ty1} {bind};"));
-        code.push(format!("for (int i={i}; i<{j}; i++) {{"));
+        let k = new_var();
+        code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
         code.push(format!(
-            "\t{ty2} s; std::istringstream ss({xs}[i]); ss >> s; {bind}.push_back(s);"
+            "\t{ty2} s; std::istringstream ss({xs}[{k}]); ss >> s; {bind}.push_back(s);"
         ));
         code.push(format!("}}"));
         code
@@ -61,9 +62,10 @@ impl Lang for Cpp11 {
         let ty1 = typing::list(&ast);
         let ty2 = typing::unit_type(&ast.0);
         code.push(format!("{ty1} {bind};"));
-        code.push(format!("for (int i={i}; i<{j}; i++) {{"));
+        let k = new_var();
+        code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
         code.push(format!(
-            "\t{ty2} s; std::istringstream ss({xs}[i]); ss >> s; {bind}.push_back(s);"
+            "\t{ty2} s; std::istringstream ss({xs}[{k}]); ss >> s; {bind}.push_back(s);"
         ));
         code.push(format!("}}"));
         code
@@ -74,7 +76,8 @@ impl Lang for Cpp11 {
         let n = &ast.1;
         let n = Index(n.0.clone());
         code.push(format!("{ty} {bind};"));
-        code.push(format!("for (int i=0; i<{n}; i++) {{"));
+        let k = new_var();
+        code.push(format!("for (int {k}=0; {k}<{n}; {k}++) {{"));
 
         let line = new_var();
         let (read_line, m) = Self::read_line(line.clone());
