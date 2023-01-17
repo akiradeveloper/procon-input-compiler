@@ -1,2 +1,2 @@
 n: int, m: int
-v: [(int0, int0); m]
+v: [[int0; 2]; m]
