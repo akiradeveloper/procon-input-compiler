@@ -202,6 +202,7 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
+    let mut failures = vec![];
     for ((name, idx), task) in tasks {
         let res = task.exec();
         match res {
@@ -211,9 +212,22 @@ fn main() -> anyhow::Result<()> {
             }
             Err(e) => {
                 let err = "ERR".red();
-                println!("{name}-{idx} {err}\n{e}")
+                println!("{name}-{idx} {err}\n{e}");
+                failures.push((name, idx));
             }
         }
+    }
+    if failures.len() == 0 {
+        let passed = "passed".green();
+        println!("All test {passed}.");
+    } else {
+        for (name, idx) in &failures {
+            let err = "ERR".red();
+            println!("{name}-{idx} {err}");
+        }
+        let n = failures.len();
+        let failed = "failed".red();
+        println!("{n} tests {failed}.");
     }
     Ok(())
 }
