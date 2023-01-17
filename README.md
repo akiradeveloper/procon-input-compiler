@@ -31,7 +31,7 @@ This is what Procon Input does.
 
 ## Supported Languages
 
-- Supported languages: Python3, C++11, Nim, Ruby
+- Supported languages: Python3, C++11, Nim, Ruby, Java
 
 |name | syntax | Python3 | C++11 | Nim | Ruby | Java |
 |-|-|-|-|-|-|-|
