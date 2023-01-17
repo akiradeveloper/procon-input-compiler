@@ -71,8 +71,15 @@ impl Lang for Java {
         code.push(format!("}}"));
         Ok(code)
     }
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error> {
-        Err(Error::TupleNotSupported)
+    fn tuple(bind: Bind, mut elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error> {
+        let n = elems.len();
+        if n > 1 {
+            return Err(Error::TupleNotSupported);
+        }
+        let e = elems.pop().unwrap();
+        let mut code = vec![];
+        code.push(format!("var {bind} = {};", e.1));
+        Ok(code)
     }
 }
 type Type = String;
@@ -102,7 +109,17 @@ mod typing {
         }
     }
     pub fn tuple(ty: &ast::Tuple) -> Result<Type, Error> {
-        Err(Error::TupleNotSupported)
+        let n = ty.0.len();
+        if n > 1 {
+            return Err(Error::TupleNotSupported);
+        }
+        let ty = &ty.0[0];
+        let ty = match ty {
+            TupleElem::Array(x) => array(x),
+            TupleElem::List(x) => list(x),
+            TupleElem::UnitType(x) => unit_type(x),
+        };
+        Ok(ty)
     }
 }
 fn unit_type_convert(ty: &ast::UnitType, v: &str) -> String {
