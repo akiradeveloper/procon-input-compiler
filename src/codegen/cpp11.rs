@@ -68,7 +68,7 @@ impl Lang for Cpp11 {
         code.push(format!("}}"));
         code
     }
-    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code {
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let mut code = vec![];
         let ty = format!("std::vector<{}>", typing::tuple_like(&ast.0));
         let n = &ast.1;
@@ -82,14 +82,14 @@ impl Lang for Cpp11 {
 
         let tuple = new_var();
         let slice = Slice(line, Range(Index::zero(), m));
-        let inner_code = Self::tuple_like(tuple.clone(), &ast.0, slice);
+        let inner_code = Self::tuple_like(tuple.clone(), &ast.0, slice)?;
         append_code(&mut code, "\t", inner_code);
         code.push(format!("\t{bind}.push_back({tuple});"));
 
         code.push(format!("}}"));
-        code
+        Ok(code)
     }
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, super::Error> {
         let mut code = vec![];
         let mut inner = vec![];
         let n = elems.len();
@@ -102,7 +102,7 @@ impl Lang for Cpp11 {
         } else {
             code.push(format!("auto {bind} = std::make_tuple({inner});"));
         }
-        code
+        Ok(code)
     }
 }
 

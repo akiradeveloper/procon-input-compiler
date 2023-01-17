@@ -38,7 +38,7 @@ impl Lang for Ruby {
         let code = format!("{bind} = {v}");
         vec![code]
     }
-    fn matrix(bind: Bind, ast: &ast::Matrix) -> Code {
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let ty = &ast.0;
         let len = &ast.1;
         let rep = &len.0;
@@ -53,15 +53,15 @@ impl Lang for Ruby {
         inner_code.push(format!("{n} = {xs}.size"));
         let slice = Slice(xs.clone(), Range(Index::zero(), Index(n.0)));
         let t = new_var();
-        inner_code.append(&mut Self::tuple_like(t.clone(), &ty, slice));
+        inner_code.append(&mut Self::tuple_like(t.clone(), &ty, slice)?);
         inner_code.push(format!("{bind} << {t}"));
 
         append_code(&mut code, "  ", inner_code);
         code.push(format!("end"));
 
-        code
+        Ok(code)
     }
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Code {
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, super::Error> {
         let mut inner = vec![];
         let n = elems.len();
         for (_, e) in elems {
@@ -73,7 +73,7 @@ impl Lang for Ruby {
         } else {
             format!("{bind} = [{inner}]")
         };
-        vec![code]
+        Ok(vec![code])
     }
 }
 fn unit_type_convert(ty: &ast::UnitType, v: &str) -> String {
