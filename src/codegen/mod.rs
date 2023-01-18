@@ -13,6 +13,7 @@ pub mod java;
 pub mod nim;
 pub mod python3;
 pub mod ruby;
+pub mod rust;
 
 #[derive(Clone)]
 pub struct Bind(pub String);
