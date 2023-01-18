@@ -8,6 +8,7 @@ pub enum Lang {
     Nim,
     Ruby,
     Java,
+    CSharp,
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
@@ -19,6 +20,7 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
         Lang::Nim => codegen::emit::<codegen::nim::Nim>(out),
         Lang::Ruby => codegen::emit::<codegen::ruby::Ruby>(out),
         Lang::Java => codegen::emit::<codegen::java::Java>(out),
+        Lang::CSharp => codegen::emit::<codegen::csharp::CSharp>(out),
     }?;
     Ok(out)
 }
