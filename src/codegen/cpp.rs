@@ -1,8 +1,8 @@
 use super::*;
 
-pub struct Cpp11;
+pub struct Cpp;
 
-impl Lang for Cpp11 {
+impl Lang for Cpp {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut code = vec![];
         let line = new_var();

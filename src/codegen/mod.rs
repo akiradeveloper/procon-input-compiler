@@ -7,11 +7,11 @@ use crate::ast::*;
 mod arity;
 use arity::*;
 
-pub mod cpp11;
+pub mod cpp;
 pub mod csharp;
 pub mod java;
 pub mod nim;
-pub mod python3;
+pub mod python;
 pub mod ruby;
 pub mod rust;
 

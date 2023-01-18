@@ -1,8 +1,8 @@
 use super::*;
 
-pub struct Python3;
+pub struct Python;
 
-impl Lang for Python3 {
+impl Lang for Python {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut out = vec![];
         let code = format!("{bind} = input().split()");
