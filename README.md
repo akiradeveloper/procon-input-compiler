@@ -27,7 +27,9 @@ xy: [(int,int); m]
 
 This is what Procon Input does.
 
-![スクリーンショット 2023-01-13 20 59 19](https://user-images.githubusercontent.com/785824/212315530-2e6c2873-5135-440b-95aa-cd68a592102a.png)
+
+![スクリーンショット 2023-01-18 20 32 16](https://user-images.githubusercontent.com/785824/213160943-deb3fd95-5fe4-4dfa-9185-4403efeb10d3.png)
+![スクリーンショット 2023-01-18 20 32 43](https://user-images.githubusercontent.com/785824/213160989-e81783db-aa34-4758-8d0c-11ed4a2671a3.png)
 
 ## Supported Languages
 
