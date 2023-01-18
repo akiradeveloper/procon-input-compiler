@@ -1,0 +1,9 @@
+use std::io::*;
+fn main() \{
+	let mut input = BufReader::new(std::io::stdin());
+
+{ parser }
+
+{ checker }
+
+}

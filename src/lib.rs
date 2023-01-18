@@ -9,6 +9,7 @@ pub enum Lang {
     Ruby,
     Java,
     CSharp,
+    Rust,
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
@@ -21,6 +22,7 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
         Lang::Ruby => codegen::emit::<codegen::ruby::Ruby>(out),
         Lang::Java => codegen::emit::<codegen::java::Java>(out),
         Lang::CSharp => codegen::emit::<codegen::csharp::CSharp>(out),
+        Lang::Rust => codegen::emit::<codegen::rust::Rust>(out),
     }?;
     Ok(out)
 }
