@@ -38,7 +38,7 @@ This is what Procon Input does.
 |integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|
 |floating number|float|`float`|`double`|`float`|`Float`|`Float`|
 |string|str|`str`|`string`|`string`|`String`|`String`|
-|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supp|
+|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|
 |array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|
 |list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|
 |matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`
