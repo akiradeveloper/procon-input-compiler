@@ -31,17 +31,17 @@ This is what Procon Input does.
 
 ## Supported Languages
 
-- Supported languages: Python3, C++11, Nim, Ruby, Java, C#
+- Supported languages: Python3, C++11, Nim, Ruby, Java, C#, Rust
 
-|name | syntax | Python3 | C++11 | Nim | Ruby | Java | C# |
-|-|-|-|-|-|-|-|-|
-|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|
-|floating number|float|`float`|`double`|`float`|`Float`|`Float`|`double`|
-|string|str|`str`|`string`|`string`|`String`|`String`|`string`|
-|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|
-|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|
-|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|
-|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|
+|name | syntax | Python3 | C++11 | Nim | Ruby | Java | C# | Rust |
+|-|-|-|-|-|-|-|-|-|
+|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|
+|floating number|float|`float`|`double`|`float`|`Float`|`Float`|`double`|`f64`|
+|string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|
+|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|
+|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
+|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
+|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
 
 ## Syntax
 
