@@ -74,6 +74,11 @@ graph LR
   Input -->|Text| P -->|AST| EC --> EL -->|Text| Output
 ```
 
+## Related Works
+
+- [proconio](https://github.com/statiolake/proconio-rs)
+- [proconIO.jl](https://github.com/lucifer1004/ProconIO.jl)
+
 ## Author
 
 Akira Hayakawa (@akiradeveloper)
