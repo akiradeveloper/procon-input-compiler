@@ -1,1 +1,1 @@
-cp $@ /tmp/a.nim; nim compile /tmp/a.nim; /tmp/a
+cp $@ /tmp/main.nim; nim compile /tmp/main.nim && /tmp/main
