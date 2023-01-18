@@ -49,6 +49,7 @@ impl Task<'_> {
                 "nim" => Compiler::compile(Compiler::Lang::Nim, &parser)?,
                 "ruby" => Compiler::compile(Compiler::Lang::Ruby, &parser)?,
                 "java" => Compiler::compile(Compiler::Lang::Java, &parser)?,
+                "csharp" => Compiler::compile(Compiler::Lang::CSharp, &parser)?,
                 _ => unreachable!(),
             }
         };
