@@ -4,7 +4,7 @@ pub struct Java;
 impl Lang for Java {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut code = vec![];
-        code.push(format!("var {bind} = input.nextLine().split(\" \");"));
+        code.push(format!("var {bind} = input.readLine().split(\" \");"));
         let n = new_var();
         code.push(format!("var {n} = {bind}.length;"));
         (code, Index(n.0))

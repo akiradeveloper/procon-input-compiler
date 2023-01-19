@@ -1,11 +1,13 @@
 import java.util.*;
+import java.io.*;
 
 public class Main \{
-    public static void main(String[] args) \{
-		Scanner input = new Scanner(System.in);
+    public static void main(String[] args) throws IOException \{
+        var input = new BufferedReader(new InputStreamReader(System.in));
 
 { parser }
 
 { checker }
+
 	}
 }
