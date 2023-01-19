@@ -8,8 +8,9 @@ use std::process::Command;
 
 #[derive(Debug)]
 struct Lang {
-    runner: PathBuf,
     template: PathBuf,
+    compile: PathBuf,
+    runner: PathBuf,
 }
 
 #[derive(Debug)]
@@ -25,6 +26,7 @@ struct TestTask<'a> {
     case_idx: u64,
     // lang/python/template
     template: &'a Path,
+    compile: &'a Path,
     // lang/python/runner
     runner: &'a Path,
     // case/1
@@ -75,11 +77,15 @@ impl TestTask<'_> {
         ));
         write(&exec_file, exec_content)?;
 
-        let input = File::open(&self.case.input)?;
+        let mut command = Command::new("sh");
+        command.arg(self.compile);
+        command.arg(exec_file);
+        let r = command.status()?;
+        anyhow::ensure!(r.success());
 
+        let input = File::open(&self.case.input)?;
         let mut command = Command::new("sh");
         command.arg(self.runner);
-        command.arg(exec_file);
         command.stdin(input);
         let r = command.status()?;
         anyhow::ensure!(r.success());
@@ -156,8 +162,9 @@ fn main() -> anyhow::Result<()> {
             langs.insert(
                 lang_name,
                 Lang {
-                    runner: path.join("runner"),
                     template: path.join("template"),
+                    compile: path.join("compile"),
+                    runner: path.join("runner"),
                 },
             );
         };
@@ -237,8 +244,9 @@ fn main() -> anyhow::Result<()> {
                             lang_name,
                             case_idx,
                             case: case,
-                            runner: &lang.runner,
                             template: &lang.template,
+                            compile: &lang.compile,
+                            runner: &lang.runner,
                             checker: Some(checker_file),
                             target: &target,
                         };
@@ -308,8 +316,9 @@ fn main() -> anyhow::Result<()> {
                         lang_name,
                         case_idx,
                         case,
-                        runner: &lang.runner,
                         template: &lang.template,
+                        compile: &lang.compile,
+                        runner: &lang.runner,
                         checker: None,
                         target: &target,
                     };

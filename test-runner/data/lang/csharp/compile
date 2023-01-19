@@ -1,0 +1,1 @@
+FILE=$@; cp $FILE /tmp/Main.cs; mcs /tmp/Main.cs

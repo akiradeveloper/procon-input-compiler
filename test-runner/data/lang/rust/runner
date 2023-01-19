@@ -1,1 +1,1 @@
-FILE=$@; cp $FILE /tmp/main.rs; rustc /tmp/main.rs -o /tmp/main && /tmp/main
+/tmp/main
