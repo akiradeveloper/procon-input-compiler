@@ -92,7 +92,7 @@ $ ./dev
 # cargo run --package test-runner -- test
 ```
 
-### Bench
+### Benchmark
 
 ```
 $ ./dev
