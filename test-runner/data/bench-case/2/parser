@@ -1,2 +1,2 @@
 n: int, m: int
-e: [(int, int); m]
+e: [[int; 2]; m]
