@@ -5,6 +5,7 @@ use std::collections::BTreeMap;
 use std::fs::File;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::time::{Duration, Instant};
 
 #[derive(Debug)]
 struct Lang {
@@ -19,6 +20,10 @@ struct TestCase {
     parser: PathBuf,
 }
 
+struct ExecInfo {
+    compile_time: Duration,
+    run_time: Duration,
+}
 #[derive(Debug)]
 struct TestTask<'a> {
     kind: &'a str,
@@ -42,7 +47,7 @@ struct Context {
     checker: String,
 }
 impl TestTask<'_> {
-    fn exec(self) -> Result<()> {
+    fn exec(self) -> Result<ExecInfo> {
         let parser = {
             let parser = read(&self.case.parser)?;
             match self.lang_name.as_ref() {
@@ -77,20 +82,27 @@ impl TestTask<'_> {
         ));
         write(&exec_file, exec_content)?;
 
+        let t = Instant::now();
         let mut command = Command::new("sh");
         command.arg(self.compile);
         command.arg(exec_file);
         let r = command.status()?;
         anyhow::ensure!(r.success());
+        let compile_time = t.elapsed();
 
+        let t = Instant::now();
         let input = File::open(&self.case.input)?;
         let mut command = Command::new("sh");
         command.arg(self.runner);
         command.stdin(input);
         let r = command.status()?;
         anyhow::ensure!(r.success());
+        let run_time = t.elapsed();
 
-        Ok(())
+        Ok(ExecInfo {
+            compile_time,
+            run_time,
+        })
     }
 }
 
@@ -326,9 +338,15 @@ fn main() -> anyhow::Result<()> {
                 }
             }
             for ((lang_name, idx), test_task) in test_tasks {
-                let t = std::time::Instant::now();
-                test_task.exec().ok();
-                println!("{lang_name}-{idx}: {:?}", t.elapsed());
+                match test_task.exec() {
+                    Ok(info) => {
+                        println!("{lang_name}-{idx}: {:?}", info.run_time);
+                    }
+                    Err(_) => {
+                        let err = "ERR".red();
+                        println!("{lang_name}-{idx} {err}");
+                    }
+                }
             }
         }
         Sub::MakeBench => {
