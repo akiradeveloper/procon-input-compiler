@@ -81,6 +81,25 @@ graph LR
 - [proconio](https://github.com/statiolake/proconio-rs)
 - [proconIO.jl](https://github.com/lucifer1004/ProconIO.jl)
 
+## Development
+
+Use `test-runner` command in dev container.
+
+### Test
+
+```
+$ ./dev
+# cargo run --package test-runner -- test
+```
+
+### Bench
+
+```
+$ ./dev
+# cargo run --package test-runner -- make-bench
+# cargo run --package test-runner -- bench
+```
+
 ## Author
 
 Akira Hayakawa (@akiradeveloper)
