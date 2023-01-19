@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 #[derive(Debug)]
-struct Case {
+struct TestCase {
     input: PathBuf,
     parser: PathBuf,
 }
@@ -16,21 +16,20 @@ struct Case {
 struct Lang {
     runner: PathBuf,
     template: PathBuf,
-    checker: BTreeMap<u64, PathBuf>,
 }
 
 #[derive(Debug)]
-struct Task<'a> {
-    name: &'a str,
-    idx: u64,
-    // case/1
-    case: &'a Case,
+struct TestTask<'a> {
+    lang_name: &'a str,
+    case_idx: u64,
     // lang/python/template
     template: &'a Path,
-    // lang/python/checker/1
-    checker: &'a Path,
     // lang/python/runner
     runner: &'a Path,
+    // case/1
+    case: &'a TestCase,
+    // checker/python/1
+    checker: &'a Path,
     // target
     target: &'a Path,
 }
@@ -39,11 +38,11 @@ struct Context {
     parser: String,
     checker: String,
 }
-impl Task<'_> {
+impl TestTask<'_> {
     fn exec(self) -> Result<()> {
         let parser = {
             let parser = read(&self.case.parser)?;
-            match self.name.as_ref() {
+            match self.lang_name.as_ref() {
                 "python" => Compiler::compile(Compiler::Lang::Python, &parser)?,
                 "cpp" => Compiler::compile(Compiler::Lang::Cpp, &parser)?,
                 "nim" => Compiler::compile(Compiler::Lang::Nim, &parser)?,
@@ -61,12 +60,14 @@ impl Task<'_> {
             engine.set_default_formatter(&tinytemplate::format_unescaped);
 
             let template = read(self.template)?;
-            engine.add_template(self.name, &template)?;
+            engine.add_template(self.lang_name, &template)?;
 
             let ctx = Context { parser, checker };
-            engine.render(self.name, &ctx)?
+            engine.render(self.lang_name, &ctx)?
         };
-        let exec_file = self.target.join(format!("{}-{}", self.name, self.idx));
+        let exec_file = self
+            .target
+            .join(format!("{}-{}", self.lang_name, self.case_idx));
         write(&exec_file, exec_content)?;
 
         let input = File::open(&self.case.input)?;
@@ -115,8 +116,35 @@ fn main() -> anyhow::Result<()> {
     cur.push("test-runner");
     cur.push("data");
 
-    let mut case: BTreeMap<u64, Case> = BTreeMap::new();
-    cur.push("case");
+    cur.push("lang");
+    let mut langs: BTreeMap<String, Lang> = BTreeMap::new();
+    for dir in std::fs::read_dir(&cur)? {
+        let dir = dir?;
+        let path = dir.path();
+        let lang_name: String = path.file_name().unwrap().to_str().unwrap().to_string();
+
+        let mut do_insert = || {
+            let lang_name = lang_name.clone();
+            langs.insert(
+                lang_name,
+                Lang {
+                    runner: path.join("runner"),
+                    template: path.join("template"),
+                },
+            );
+        };
+        if let Some(lang) = &opts.lang {
+            if &lang_name == lang {
+                do_insert();
+            }
+        } else {
+            do_insert();
+        }
+    }
+    cur.pop();
+
+    cur.push("test-case");
+    let mut test_cases: BTreeMap<u64, TestCase> = BTreeMap::new();
     for ent in std::fs::read_dir(&cur)? {
         let ent = ent?;
         let path = ent.path();
@@ -127,9 +155,9 @@ fn main() -> anyhow::Result<()> {
             .unwrap()
             .to_string()
             .parse()?;
-        case.insert(
+        test_cases.insert(
             idx,
-            Case {
+            TestCase {
                 input: path.join("input"),
                 parser: path.join("parser"),
             },
@@ -137,16 +165,15 @@ fn main() -> anyhow::Result<()> {
     }
     cur.pop();
 
-    let mut lang: BTreeMap<String, Lang> = BTreeMap::new();
-    cur.push("lang");
+    cur.push("test-checker");
+    let mut test_checkers = BTreeMap::new();
     for dir in std::fs::read_dir(&cur)? {
         let dir = dir?;
         let path = dir.path();
-        let name: String = path.file_name().unwrap().to_str().unwrap().to_string();
+        let lang_name: String = path.file_name().unwrap().to_str().unwrap().to_string();
 
         let checker: BTreeMap<u64, PathBuf> = {
             let mut out = BTreeMap::new();
-            let path = path.join("checker");
             for ent in std::fs::read_dir(&path)? {
                 let ent = ent?;
                 let path = ent.path();
@@ -161,61 +188,46 @@ fn main() -> anyhow::Result<()> {
             }
             out
         };
-        let do_insert = || {
-            let name = name.clone();
-            lang.insert(
-                name,
-                Lang {
-                    runner: path.join("runner"),
-                    template: path.join("template"),
-                    checker,
-                },
-            );
-        };
-        if let Some(lang) = &opts.lang {
-            if &name == lang {
-                do_insert();
-            }
-        } else {
-            do_insert();
-        }
+        test_checkers.insert(lang_name, checker);
     }
     cur.pop();
 
     let target = cur.join("target");
     std::fs::create_dir(&target).ok();
 
-    let mut tasks = BTreeMap::new();
-    for name in lang.keys() {
-        for idx in case.keys() {
-            let lang = lang.get(name).unwrap();
-            if let Some(checker) = lang.checker.get(idx) {
-                let task = Task {
-                    name,
-                    idx: *idx,
-                    case: case.get(idx).unwrap(),
+    let mut test_tasks = BTreeMap::new();
+    for (lang_name, lang) in &langs {
+        for (&case_idx, case) in &test_cases {
+            if let Some(checker_file) = test_checkers
+                .get(lang_name)
+                .and_then(|checker| checker.get(&case_idx))
+            {
+                let task = TestTask {
+                    lang_name,
+                    case_idx,
+                    case: case,
                     runner: &lang.runner,
                     template: &lang.template,
-                    checker,
+                    checker: checker_file,
                     target: &target,
                 };
-                tasks.insert((name.to_owned(), *idx), task);
+                test_tasks.insert((lang_name.to_owned(), case_idx), task);
             }
         }
     }
 
     let mut failures = vec![];
-    for ((name, idx), task) in tasks {
-        let res = task.exec();
+    for ((lang_name, idx), test_task) in test_tasks {
+        let res = test_task.exec();
         match res {
             Ok(_) => {
                 let ok = "OK".green();
-                println!("{name}-{idx} {ok}")
+                println!("{lang_name}-{idx} {ok}")
             }
             Err(e) => {
                 let err = "ERR".red();
-                println!("{name}-{idx} {err}\n{e}");
-                failures.push((name, idx));
+                println!("{lang_name}-{idx} {err}\n{e}");
+                failures.push((lang_name, idx));
             }
         }
     }
