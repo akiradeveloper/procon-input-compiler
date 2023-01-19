@@ -96,7 +96,6 @@ $ ./dev
 
 ```
 $ ./dev
-# cargo run --package test-runner -- make-bench
 # cargo run --package test-runner -- bench
 ```
 
