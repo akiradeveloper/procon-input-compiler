@@ -6,6 +6,7 @@
 #include <cassert>
  
 int main() \{
+    std::cin.sync_with_stdio(false);
 
 { parser }
 
