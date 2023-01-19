@@ -1,2 +1,2 @@
 n: int
-a: [str; n]
+a: [(str); n]
