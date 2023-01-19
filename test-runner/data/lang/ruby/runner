@@ -1,1 +1,1 @@
-ruby $@
+ruby /tmp/main

@@ -1,1 +1,1 @@
-cp $@ /tmp/a.cpp; g++ -std=c++11 /tmp/a.cpp -o /tmp/a.out; /tmp/a.out
+/tmp/a.out

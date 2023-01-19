@@ -1,0 +1,1 @@
+cp $@ /tmp/main.nim; nim compile /tmp/main.nim
