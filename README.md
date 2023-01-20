@@ -47,17 +47,18 @@ This is what Procon Input does.
 |list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
 |matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
 
-### Performance
+### Performance (ms)
 
 | bench_no | python | cpp | nim | ruby | java | csharp | rust |
 |----------|--------|-----|-----|------|------|--------|------|
-| 1        | 48ms     | 59  | 138 | 76   | 156  | 81     | 30   |
-| 2        | 128    | 186 | 620 | 187  | 159  | 124    | 118  |
-| 3        | 28     | 12  | 53  | 55   | 110  | 41     | 11   |
+| 1        | 41     | 53  | 30  | 93   | 111  | 73     | 16   |
+| 2        | 121    | 99  | 72  | 205  | 151  | 121    | 29   |
+| 3        | 28     | 12  | 12  | 68   | 98   | 41     | 7    |
 
-- [bench 1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) n=100000
-- [bench 2](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/2/parser) m=100000
-- [bench 3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) n=1000
+- bench-case
+  - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
+  - [2](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/2/parser) (m=100000): Large Graph
+  - [3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) (n=1000): Large Matrix
 
 ## Syntax
 
