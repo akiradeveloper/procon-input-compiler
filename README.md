@@ -50,11 +50,12 @@ This is what Procon Input does.
 
 ### Performance (ms)
 
-| bench_no | python | cpp | nim | ruby | java | csharp | rust |
-|----------|--------|-----|-----|------|------|--------|------|
-| 1        | 39     | 24  | 26  | 80   | 128  | 76     | 10   |
-| 2        | 130    | 73  | 69  | 214  | 136  | 156    | 24   |
-| 3        | 16     | 12  | 9   | 60   | 113  | 33     | 4    |
+| Bench# | Python | C++ | Nim | Ruby | Java | C#  | Rust |
+|--------|--------|-----|-----|------|------|-----|------|
+| 1      | 35     | 15  | 24  | 73   | 116  | 66  | 9    |
+| 2      | 122    | 67  | 71  | 193  | 130  | 133 | 23   |
+| 3      | 15     | 4   | 8   | 54   | 107  | 33  | 4    |
+
 
 - bench-case
   - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
