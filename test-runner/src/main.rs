@@ -420,7 +420,7 @@ fn bench_2() -> String {
 }
 fn bench_3() -> String {
     let mut out = String::new();
-    out.push_str("1000\n");
+    out.push_str("1000 1000\n");
     let s = vec!["a"; 1000].join("");
     let a = [s.as_str(); 1000];
     out.push_str(&a.join("\n"));
