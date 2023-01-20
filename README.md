@@ -29,7 +29,8 @@ This is what Procon Input does.
 
 
 ![スクリーンショット 2023-01-18 20 32 16](https://user-images.githubusercontent.com/785824/213160943-deb3fd95-5fe4-4dfa-9185-4403efeb10d3.png)
-![スクリーンショット 2023-01-18 20 32 43](https://user-images.githubusercontent.com/785824/213160989-e81783db-aa34-4758-8d0c-11ed4a2671a3.png)
+![スクリーンショット 2023-01-20 21 03 33](https://user-images.githubusercontent.com/785824/213690840-7bd3c1b3-7754-4769-a08b-b73a3f623654.png)
+
 
 ## Supported Languages
 
@@ -51,9 +52,9 @@ This is what Procon Input does.
 
 | bench_no | python | cpp | nim | ruby | java | csharp | rust |
 |----------|--------|-----|-----|------|------|--------|------|
-| 1        | 60     | 56  | 27  | 122  | 126  | 68     | 10   |
-| 2        | 118    | 134 | 68  | 197  | 131  | 140    | 23   |
-| 3        | 16     | 13  | 9   | 62   | 112  | 33     | 4    |
+| 1        | 39     | 24  | 26  | 80   | 128  | 76     | 10   |
+| 2        | 130    | 73  | 69  | 214  | 136  | 156    | 24   |
+| 3        | 16     | 12  | 9   | 60   | 113  | 33     | 4    |
 
 - bench-case
   - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
