@@ -33,9 +33,9 @@ This is what Procon Input does.
 
 ## Supported Languages
 
-- Supported languages: Python3, C++11, Nim, Ruby, Java, C#, Rust
+- Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust
 
-|name | syntax | Python3 | C++11 | Nim | Ruby | Java | C# | Rust |
+|name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust |
 |-|-|-|-|-|-|-|-|-|
 |integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|
 |floating number|float|`float`|`double`|`float`|`Float`|`Float`|`double`|`f64`|
