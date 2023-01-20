@@ -55,6 +55,9 @@ This is what Procon Input does.
 | 2        | 128    | 186 | 620 | 187  | 159  | 124    | 118  |
 | 3        | 28     | 12  | 53  | 55   | 110  | 41     | 11   |
 
+- [bench 1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) n=100000
+- [bench 2](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/2/parser) m=100000
+- [bench 3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) n=1000
 
 ## Syntax
 
