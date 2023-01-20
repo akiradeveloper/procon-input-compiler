@@ -1,1 +1,1 @@
-FILE=$@; cp $FILE /tmp/main.rs; rustc /tmp/main.rs -o /tmp/main 1>&2 2>/dev/null
+FILE=$@; cp $FILE /tmp/main.rs; rustc /tmp/main.rs -C opt-level=3 -o /tmp/main 1>&2 2>/dev/null
