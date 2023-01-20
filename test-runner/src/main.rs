@@ -82,22 +82,22 @@ impl TestTask<'_> {
         ));
         write(&exec_file, exec_content)?;
 
-        let t = Instant::now();
         let mut command = Command::new("sh");
         command.arg(self.compile);
         command.arg(exec_file);
-        let r = command.status()?;
-        anyhow::ensure!(r.success());
-        let compile_time = t.elapsed();
-
         let t = Instant::now();
+        let r = command.status()?;
+        let compile_time = t.elapsed();
+        anyhow::ensure!(r.success());
+
         let input = File::open(&self.case.input)?;
         let mut command = Command::new("sh");
         command.arg(self.runner);
         command.stdin(input);
+        let t = Instant::now();
         let r = command.status()?;
-        anyhow::ensure!(r.success());
         let run_time = t.elapsed();
+        anyhow::ensure!(r.success());
 
         Ok(ExecInfo {
             compile_time,
@@ -370,14 +370,22 @@ fn main() -> anyhow::Result<()> {
 use tabled::{Style, Table, Tabled};
 #[derive(Tabled, Default)]
 struct BenchResult {
+    #[tabled(rename = "Bench#")]
     bench_no: u64,
     // values are in ms
+    #[tabled(rename = "Python")]
     python: u64,
+    #[tabled(rename = "C++")]
     cpp: u64,
+    #[tabled(rename = "Nim")]
     nim: u64,
+    #[tabled(rename = "Ruby")]
     ruby: u64,
+    #[tabled(rename = "Java")]
     java: u64,
+    #[tabled(rename = "C#")]
     csharp: u64,
+    #[tabled(rename = "Rust")]
     rust: u64,
 }
 fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
