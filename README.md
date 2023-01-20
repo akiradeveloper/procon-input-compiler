@@ -35,6 +35,8 @@ This is what Procon Input does.
 
 - Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust
 
+### Mapping
+
 |name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust |
 |-|-|-|-|-|-|-|-|-|
 |integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|
@@ -44,6 +46,15 @@ This is what Procon Input does.
 |array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
 |list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
 |matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
+
+### Performance
+
+| bench_no | python | cpp | nim | ruby | java | csharp | rust |
+|----------|--------|-----|-----|------|------|--------|------|
+| 1        | 48ms     | 59  | 138 | 76   | 156  | 81     | 30   |
+| 2        | 128    | 186 | 620 | 187  | 159  | 124    | 118  |
+| 3        | 28     | 12  | 53  | 55   | 110  | 41     | 11   |
+
 
 ## Syntax
 
