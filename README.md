@@ -51,14 +51,14 @@ This is what Procon Input does.
 
 | bench_no | python | cpp | nim | ruby | java | csharp | rust |
 |----------|--------|-----|-----|------|------|--------|------|
-| 1        | 41     | 53  | 30  | 93   | 111  | 73     | 16   |
-| 2        | 121    | 99  | 72  | 205  | 151  | 121    | 29   |
-| 3        | 28     | 12  | 12  | 68   | 98   | 41     | 7    |
+| 1        | 60     | 56  | 27  | 122  | 126  | 68     | 10   |
+| 2        | 118    | 134 | 68  | 197  | 131  | 140    | 23   |
+| 3        | 16     | 13  | 9   | 62   | 112  | 33     | 4    |
 
 - bench-case
   - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
   - [2](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/2/parser) (m=100000): Large Graph
-  - [3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) (n=1000): Large Matrix
+  - [3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) (n=1000, m=1000): Large Matrix
 
 ## Syntax
 
