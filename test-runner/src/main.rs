@@ -337,17 +337,24 @@ fn main() -> anyhow::Result<()> {
                     test_tasks.insert((lang_name.to_owned(), case_idx), task);
                 }
             }
+            let mut result: BTreeMap<u64, BTreeMap<String, Duration>> = BTreeMap::new();
             for ((lang_name, idx), test_task) in test_tasks {
                 match test_task.exec() {
                     Ok(info) => {
+                        result
+                            .entry(idx)
+                            .or_default()
+                            .insert(lang_name.to_owned(), info.run_time);
                         println!("{lang_name}-{idx}: {:?}", info.run_time);
                     }
                     Err(_) => {
                         let err = "ERR".red();
-                        println!("{lang_name}-{idx} {err}");
+                        // No benchmark should fail.
+                        panic!("{lang_name}-{idx} {err}");
                     }
                 }
             }
+            println!("{}", make_table(result));
         }
         Sub::MakeBench => {
             cur.push("bench-case");
@@ -359,6 +366,43 @@ fn main() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+use tabled::{Style, Table, Tabled};
+#[derive(Tabled, Default)]
+struct BenchResult {
+    bench_no: u64,
+    // values are in ms
+    python: u64,
+    cpp: u64,
+    nim: u64,
+    ruby: u64,
+    java: u64,
+    csharp: u64,
+    rust: u64,
+}
+fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
+    let mut rows: Vec<BenchResult> = vec![];
+    for (bench_no, result_map) in result {
+        let mut row = BenchResult::default();
+        row.bench_no = bench_no;
+        for (lang, du) in result_map {
+            let du = du.as_millis() as u64;
+            match lang.as_str() {
+                "python" => row.python = du,
+                "cpp" => row.cpp = du,
+                "nim" => row.nim = du,
+                "ruby" => row.ruby = du,
+                "java" => row.java = du,
+                "csharp" => row.csharp = du,
+                "rust" => row.rust = du,
+                _ => unreachable!(),
+            }
+        }
+        rows.push(row);
+    }
+    let mut tbl = Table::new(rows);
+    tbl.with(Style::markdown());
+    tbl.to_string()
 }
 fn bench_1() -> String {
     let mut out = String::new();
