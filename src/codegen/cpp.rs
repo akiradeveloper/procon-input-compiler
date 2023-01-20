@@ -25,17 +25,8 @@ impl Lang for Cpp {
         let mut code = vec![];
         let Slice(xs, range) = source;
         let i = range.0;
-        let ss = new_var();
-        let ty = typing::unit_type(&ast);
-        code.push(format!("{ty} {bind};"));
-        code.push(format!("std::istringstream {ss}({xs}[{i}]);"));
-        code.push(format!("{ss} >> {bind};"));
-        match ast {
-            ast::UnitType::Int0 => {
-                code.push(format!("{bind}--;"));
-            }
-            _ => {}
-        }
+        let v = format!("{xs}[{i}]");
+        code.append(&mut scan_unit_type(bind, &ast, &v));
         code
     }
     fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code {
@@ -43,14 +34,18 @@ impl Lang for Cpp {
         let Slice(xs, range) = source;
         let i = range.0;
         let j = range.1;
-        let ty1 = typing::array(&ast);
-        let ty2 = typing::unit_type(&ast.0);
-        code.push(format!("{ty1} {bind};"));
+        let ty = typing::array(&ast);
+        code.push(format!("{ty} {bind};"));
         let k = new_var();
         code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
-        code.push(format!(
-            "\t{ty2} s; std::istringstream ss({xs}[{k}]); ss >> s; {bind}.push_back(s);"
-        ));
+
+        let mut inner_code = vec![];
+        let unit_val = new_var();
+        let v = format!("{xs}[{k}]");
+        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0, &v));
+        inner_code.push(format!("{bind}.push_back({unit_val});"));
+        append_code(&mut code, "\t", inner_code);
+
         code.push(format!("}}"));
         code
     }
@@ -59,14 +54,18 @@ impl Lang for Cpp {
         let Slice(xs, range) = source;
         let i = range.0;
         let j = range.1;
-        let ty1 = typing::list(&ast);
-        let ty2 = typing::unit_type(&ast.0);
-        code.push(format!("{ty1} {bind};"));
+        let ty = typing::list(&ast);
+        code.push(format!("{ty} {bind};"));
         let k = new_var();
         code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
-        code.push(format!(
-            "\t{ty2} s; std::istringstream ss({xs}[{k}]); ss >> s; {bind}.push_back(s);"
-        ));
+
+        let mut inner_code = vec![];
+        let unit_val = new_var();
+        let v = format!("{xs}[{k}]");
+        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0, &v));
+        inner_code.push(format!("{bind}.push_back({unit_val});"));
+        append_code(&mut code, "\t", inner_code);
+
         code.push(format!("}}"));
         code
     }
@@ -107,6 +106,28 @@ impl Lang for Cpp {
         }
         Ok(code)
     }
+}
+
+fn scan_unit_type(bind: Bind, ast: &ast::UnitType, s: &str) -> Code {
+    let mut code = vec![];
+    let ty = typing::unit_type(&ast);
+    code.push(format!("{ty} {bind};"));
+    match ast {
+        ast::UnitType::Int => {
+            code.push(format!("sscanf({s}.c_str(), \"%d\", &{bind});"));
+        }
+        ast::UnitType::Int0 => {
+            code.push(format!("sscanf({s}.c_str(), \"%d\", &{bind});"));
+            code.push(format!("{bind}--;"));
+        }
+        ast::UnitType::Float => {
+            code.push(format!("sscanf({s}.c_str(), \"%f\", &{bind});"));
+        }
+        ast::UnitType::Str => {
+            code.push(format!("{bind} = {s};"));
+        }
+    }
+    code
 }
 
 type Type = String;
