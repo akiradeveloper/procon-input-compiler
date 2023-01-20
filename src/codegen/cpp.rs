@@ -114,14 +114,14 @@ fn scan_unit_type(bind: Bind, ast: &ast::UnitType, s: &str) -> Code {
     code.push(format!("{ty} {bind};"));
     match ast {
         ast::UnitType::Int => {
-            code.push(format!("sscanf({s}.c_str(), \"%d\", &{bind});"));
+            code.push(format!("{bind} = atoi({s}.c_str());"));
         }
         ast::UnitType::Int0 => {
-            code.push(format!("sscanf({s}.c_str(), \"%d\", &{bind});"));
+            code.push(format!("{bind} = atoi({s}.c_str());"));
             code.push(format!("{bind}--;"));
         }
         ast::UnitType::Float => {
-            code.push(format!("sscanf({s}.c_str(), \"%f\", &{bind});"));
+            code.push(format!("{bind} = atof({s}.c_str());"));
         }
         ast::UnitType::Str => {
             code.push(format!("{bind} = {s};"));
