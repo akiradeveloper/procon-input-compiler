@@ -58,6 +58,7 @@ impl TestTask<'_> {
                 "java" => Compiler::compile(Compiler::Lang::Java, &parser)?,
                 "csharp" => Compiler::compile(Compiler::Lang::CSharp, &parser)?,
                 "rust" => Compiler::compile(Compiler::Lang::Rust, &parser)?,
+                "kotlin" => Compiler::compile(Compiler::Lang::Kotlin, &parser)?,
                 _ => unreachable!(),
             }
         };
@@ -387,6 +388,8 @@ struct BenchResult {
     csharp: u64,
     #[tabled(rename = "Rust")]
     rust: u64,
+    #[tabled(rename = "Kotlin")]
+    kotlin: u64,
 }
 fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
     let mut rows: Vec<BenchResult> = vec![];
@@ -403,6 +406,7 @@ fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
                 "java" => row.java = du,
                 "csharp" => row.csharp = du,
                 "rust" => row.rust = du,
+                "kotlin" => row.kotlin = du,
                 _ => unreachable!(),
             }
         }
@@ -415,7 +419,7 @@ fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
 fn bench_1() -> String {
     let mut out = String::new();
     out.push_str("100000\n");
-    let mut a = vec!["1.0"; 100000];
+    let a = vec!["1.0"; 100000];
     out.push_str(&a.join(" "));
     out
 }

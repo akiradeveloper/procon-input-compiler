@@ -1,0 +1,1 @@
+cp $@ /tmp/main.kt && kotlinc /tmp/main.kt -include-runtime -d /tmp/main.jar 1>&2 2>/dev/null

@@ -10,6 +10,7 @@ use arity::*;
 pub mod cpp;
 pub mod csharp;
 pub mod java;
+pub mod kotlin;
 pub mod nim;
 pub mod python;
 pub mod ruby;
