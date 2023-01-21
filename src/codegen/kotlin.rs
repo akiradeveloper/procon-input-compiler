@@ -27,7 +27,8 @@ impl Lang for Kotlin {
         let k = new_var();
         code.push(format!("for ({k} in {i} until {j}) {{"));
         let x = new_var();
-        let inner_code = bind_unit_type(x, &ast.0, &format!("{xs}[{k}]"));
+        let mut inner_code = bind_unit_type(x.clone(), &ast.0, &format!("{xs}[{k}]"));
+        inner_code.push(format!("{bind}.add({x})"));
         append_code(&mut code, "\t", inner_code);
         code.push(format!("}}"));
         code
@@ -42,7 +43,8 @@ impl Lang for Kotlin {
         let k = new_var();
         code.push(format!("for ({k} in {i} until {j}) {{"));
         let x = new_var();
-        let inner_code = bind_unit_type(x, &ast.0, &format!("{xs}[{k}]"));
+        let mut inner_code = bind_unit_type(x.clone(), &ast.0, &format!("{xs}[{k}]"));
+        inner_code.push(format!("{bind}.add({x})"));
         append_code(&mut code, "\t", inner_code);
         code.push(format!("}}"));
         code
