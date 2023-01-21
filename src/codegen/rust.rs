@@ -76,6 +76,8 @@ impl Lang for Rust {
         Ok(vec![code])
     }
 }
+// In Rust, the default types for integer number is i32 and floating number is f64.
+// https://github.com/rust-lang/rfcs/blob/master/text/0212-restore-int-fallback.md
 fn unit_type_convert(ty: &ast::UnitType, v: &str) -> String {
     match ty {
         ast::UnitType::Int => {
