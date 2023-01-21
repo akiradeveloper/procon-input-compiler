@@ -1,0 +1,1 @@
+ kotlinc a.kt -include-runtime -d /tmp/a.jar && kotlin /tmp/a.jar
