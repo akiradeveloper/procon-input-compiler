@@ -89,7 +89,7 @@ mod typing {
         match ty {
             ast::UnitType::Int => "Integer".to_string(),
             ast::UnitType::Int0 => "Integer".to_string(),
-            ast::UnitType::Float => "Float".to_string(),
+            ast::UnitType::Float => "Double".to_string(),
             ast::UnitType::Str => "String".to_string(),
         }
     }
@@ -128,7 +128,7 @@ fn unit_type_convert(ty: &ast::UnitType, v: &str) -> String {
             format!("Integer.parseInt({v})")
         }
         ast::UnitType::Float => {
-            format!("Float.parseFloat({v})")
+            format!("Double.parseFloat({v})")
         }
         ast::UnitType::Int0 => {
             format!("(Integer.parseInt({v})-1)")
