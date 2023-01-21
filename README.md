@@ -34,19 +34,19 @@ This is what Procon Input does.
 
 ## Supported Languages
 
-- Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust
+- Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust, Kotlin
 
 ### Mapping
 
-|name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust |
-|-|-|-|-|-|-|-|-|-|
-|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|
-|floating number|float|`float`|`double`|`float`|`Float`|`Float`|`double`|`f64`|
-|string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|
-|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|
-|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
-|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
-|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|
+|name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust | Kotlin |
+|-|-|-|-|-|-|-|-|-|-|
+|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|`Int`|
+|floating number|float|`float`|`double`|`float`|`Float`|`Float`|`double`|`f64`|`Double`|
+|string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|`String`|
+|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|Not Supported|
+|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|
+|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|
+|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|
 
 ### Performance (ms)
 
