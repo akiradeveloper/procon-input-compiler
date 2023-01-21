@@ -41,7 +41,7 @@ This is what Procon Input does.
 |name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust | Kotlin |
 |-|-|-|-|-|-|-|-|-|-|
 |integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|`Int`|
-|floating number|float|`float`|`double`|`float`|`Float`|`Float`|`double`|`f64`|`Double`|
+|floating number|float|`float`|`double`|`float`|`Float`|`Double`|`double`|`f64`|`Double`|
 |string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|`String`|
 |tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|Not Supported|
 |array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|
