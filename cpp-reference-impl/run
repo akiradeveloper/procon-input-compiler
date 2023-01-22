@@ -1,4 +1,0 @@
-# Example: ./run 1
-NO=$1
-g++ -O3 bench$NO.cpp -o /tmp/a.out
-time /tmp/a.out < ../test-runner/data/bench-case/$NO/input
