@@ -1,0 +1,2 @@
+assert(n==3);
+assert(t == "abcbac");
