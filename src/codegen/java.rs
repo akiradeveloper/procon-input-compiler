@@ -128,7 +128,7 @@ fn unit_type_convert(ty: &ast::UnitType, v: &str) -> String {
             format!("Integer.parseInt({v})")
         }
         ast::UnitType::Float => {
-            format!("Double.parseFloat({v})")
+            format!("Double.parseDouble({v})")
         }
         ast::UnitType::Int0 => {
             format!("(Integer.parseInt({v})-1)")
