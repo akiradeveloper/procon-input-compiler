@@ -27,6 +27,98 @@ This is what Procon Input does.
 ![スクリーンショット 2023-01-22 17 45 45](https://user-images.githubusercontent.com/785824/213907536-c5381fb4-2854-4208-8962-8f9d3859da5a.png)
 ![スクリーンショット 2023-01-22 17 45 19](https://user-images.githubusercontent.com/785824/213907534-ae6c317e-d319-4868-9bad-687bb6d45285.png)
 
+## Syntax
+
+```
+Root := Line in-between ‘\n’
+Line := Definition in-between ‘,‘
+Definition := Var : Type
+
+UnitType := int | int0 | float | str
+Array := [UnitType; Len]
+List := [UnitType]
+
+TupleElem := UnitType | Array | List
+Tuple := (TupleElem in-between ‘,’)
+TupleLike := Array | List | Tuple
+
+Matrix := [TupleLike; Len]
+Type := UnitType | TupleLike | Matrix
+```
+### Example 1: Vertial Array
+
+```
+3
+10
+20
+40
+```
+
+```
+n: int
+a: [(int); n]
+```
+
+### Example 2: Jagged Array (Graph)
+
+`int0` interprets 1-indexed number to a 0-indexed number.
+
+```
+4
+2 2 3
+1 4
+0
+0
+```
+
+```
+n: int
+conn: [[int0]; n]
+```
+
+```mermaid
+graph TD
+  v1(1) --> v2(2)
+  v1 --> v3(3)
+  v2 --> v4(4)
+```
+
+### Example 3: Weighted Graph
+
+```
+4 3
+1 2 1.0
+1 3 1.5
+2 4 2.5
+```
+
+```
+n_v: int, n_e: int
+e: [(int0, int0, float); n_e]
+```
+
+```mermaid
+graph TD
+  v1(1) -->|1.0| v2(2)
+  v1 -->|1.5| v3(3)
+  v2 -->|2.5| v4(4)
+```
+
+### Example 4: (n-m) Matrix
+
+```
+4 3
+1 2 3
+4 5 6
+7 8 9
+10 11 12
+```
+
+```
+n: int, m: int
+mat: [[int;m]; n]
+```
+
 ## Supported Languages
 
 - Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust, Kotlin
@@ -56,24 +148,7 @@ This is what Procon Input does.
   - [2](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/2/parser) (m=100000): Large Graph
   - [3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) (n=1000, m=1000): Large Matrix
 
-## Syntax
 
-```
-Root := Line in-between ‘\n’
-Line := Definition in-between ‘,‘
-Definition := Var : Type
-
-UnitType := int | int0 | float | str
-Array := [UnitType; Len]
-List := [UnitType]
-
-TupleElem := UnitType | Array | List
-Tuple := (TupleElem in-between ‘,’)
-TupleLike := Array | List | Tuple
-
-Matrix := [TupleLike; Len]
-Type := UnitType | TupleLike | Matrix
-```
 
 ## Architecuture
 
