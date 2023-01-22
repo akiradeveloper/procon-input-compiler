@@ -20,7 +20,7 @@ pub enum Lang {
     CSharp,
     Rust,
     Kotlin,
-    Cpp2,
+    Cpp0,
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
@@ -37,7 +37,7 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
         Lang::CSharp => codegen::emit::<codegen::csharp::CSharp>(out),
         Lang::Rust => codegen::emit::<codegen::rust::Rust>(out),
         Lang::Kotlin => codegen::emit::<codegen::kotlin::Kotlin>(out),
-        Lang::Cpp2 => codegen::emit::<codegen::cpp2::Cpp2>(out),
+        Lang::Cpp0 => codegen::emit::<codegen::cpp0::Cpp>(out),
     }?;
     Ok(out)
 }

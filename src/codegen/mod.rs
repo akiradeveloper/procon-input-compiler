@@ -66,7 +66,7 @@ mod arity {
 use arity::*;
 
 pub mod cpp;
-pub mod cpp2;
+pub mod cpp0;
 pub mod csharp;
 pub mod java;
 pub mod kotlin;

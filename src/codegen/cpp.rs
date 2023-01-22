@@ -1,107 +1,74 @@
 use super::*;
-
 pub struct Cpp;
-
 impl Lang for Cpp {
     fn read_line(bind: Bind) -> (Code, Index) {
-        let mut code = vec![];
-        let line = new_var();
-        let s = new_var();
-        let ss = new_var();
-        let n = new_var();
-        code.push(format!("std::vector<std::string> {bind};"));
-        code.push(format!(
-            "std::string {line}; std::getline(std::cin, {line});"
-        ));
-        code.push(format!("std::istringstream {ss}({line}); std::string {s};"));
-        code.push(format!(
-            "while (std::getline({ss}, {s}, ' ')) {{ {bind}.push_back({s}); }}"
-        ));
-        code.push(format!("int {n} = {bind}.size();"));
-        let size = Index(n.0);
-        (code, size)
+        (vec![], Index::null())
     }
-    fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code {
+    fn unit_type(bind: Bind, ast: &ast::UnitType, _: Slice) -> Code {
         let mut code = vec![];
-        let Slice(xs, range) = source;
-        let i = range.0;
-        let v = format!("{xs}[{i}]");
-        code.append(&mut scan_unit_type(bind, &ast, &v));
+        code.append(&mut scan_unit_type(bind, &ast));
         code
     }
-    fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code {
+    fn array(bind: Bind, ast: &ast::Array, _: Slice) -> Code {
         let mut code = vec![];
-        let Slice(xs, range) = source;
-        let i = range.0;
-        let j = range.1;
         let ty = typing::array(&ast);
         let n = Index(ast.1 .0.clone());
         code.push(format!("{ty} {bind};"));
         code.push(format!("{bind}.reserve({n});"));
 
         let k = new_var();
-        code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
+        code.push(format!("for (int {k}=0; {k}<{n}; ++{k}) {{"));
 
         let mut inner_code = vec![];
         let unit_val = new_var();
-        let v = format!("{xs}[{k}]");
-        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0, &v));
+        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0));
         inner_code.push(format!("{bind}.push_back({unit_val});"));
         append_code(&mut code, "\t", inner_code);
 
         code.push(format!("}}"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
+    fn list(bind: Bind, ast: &ast::List, _: Slice) -> Code {
         let mut code = vec![];
-        let Slice(xs, range) = source;
-        let i = range.0;
-        let j = range.1;
-
-        let n = Bind(ast.1 .0.to_owned());
-        code.push(format!("int {n} = atoi({xs}[{i}].c_str());"));
-
         let ty = typing::list(&ast);
+
+        let n = Index(ast.1 .0.clone());
+        code.push(format!("int {n}; std::cin >> {n};"));
+
         code.push(format!("{ty} {bind};"));
         code.push(format!("{bind}.reserve({n});"));
 
         let k = new_var();
-        code.push(format!("for (int {k}={i}+1; {k}<{j}; {k}++) {{"));
+        code.push(format!("for (int {k}=0; {k}<{n}; ++{k}) {{"));
 
         let mut inner_code = vec![];
         let unit_val = new_var();
-        let v = format!("{xs}[{k}]");
-        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0, &v));
+        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0));
         inner_code.push(format!("{bind}.push_back({unit_val});"));
         append_code(&mut code, "\t", inner_code);
 
         code.push(format!("}}"));
         code
     }
-    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
+    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error> {
         let mut code = vec![];
         let ty = format!("std::vector<{}>", typing::tuple_like(&ast.0));
         let n = Index(ast.1 .0.clone());
         code.push(format!("{ty} {bind};"));
         code.push(format!("{bind}.reserve({n});"));
-
         let k = new_var();
-        code.push(format!("for (int {k}=0; {k}<{n}; {k}++) {{"));
+        code.push(format!("for (int {k}=0; {k}<{n}; ++{k}) {{"));
 
-        let line = new_var();
-        let (read_line, m) = Self::read_line(line.clone());
-        append_code(&mut code, "\t", read_line);
-
+        let null_slice = Slice(Bind::null(), Range(Index::null(), Index::null()));
         let tuple = new_var();
-        let slice = Slice(line, Range(Index::zero(), m));
-        let inner_code = Self::tuple_like(tuple.clone(), &ast.0, slice)?;
+        let inner_code = Self::tuple_like(tuple.clone(), &ast.0, null_slice)?;
         append_code(&mut code, "\t", inner_code);
         code.push(format!("\t{bind}.push_back({tuple});"));
 
         code.push(format!("}}"));
         Ok(code)
     }
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, super::Error> {
+    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error> {
         let mut code = vec![];
         let mut inner = vec![];
         let n = elems.len();
@@ -118,23 +85,23 @@ impl Lang for Cpp {
     }
 }
 
-fn scan_unit_type(bind: Bind, ast: &ast::UnitType, s: &str) -> Code {
+fn scan_unit_type(bind: Bind, ast: &ast::UnitType) -> Code {
     let mut code = vec![];
     let ty = typing::unit_type(&ast);
     code.push(format!("{ty} {bind};"));
     match ast {
         ast::UnitType::Int => {
-            code.push(format!("{bind} = atoi({s}.c_str());"));
+            code.push(format!("std::cin >> {bind};"));
         }
         ast::UnitType::Int0 => {
-            code.push(format!("{bind} = atoi({s}.c_str());"));
+            code.push(format!("std::cin >> {bind};"));
             code.push(format!("{bind}--;"));
         }
         ast::UnitType::Float => {
-            code.push(format!("{bind} = atof({s}.c_str());"));
+            code.push(format!("std::cin >> {bind};"));
         }
         ast::UnitType::Str => {
-            code.push(format!("{bind} = {s};"));
+            code.push(format!("std::cin >> {bind};"));
         }
     }
     code
