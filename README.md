@@ -73,7 +73,7 @@ a: [(int); n]
 
 ```
 n: int
-conn: [[int0]; n]
+g: [[int0]; n]
 ```
 
 ```mermaid
