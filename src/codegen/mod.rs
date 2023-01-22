@@ -3,6 +3,7 @@ use std::sync::atomic::Ordering;
 
 use crate::ast;
 use crate::ast::*;
+use crate::new_id;
 
 mod arity;
 use arity::*;
@@ -44,11 +45,8 @@ fn add_or(x: Index, y: Arity, or: Index) -> Index {
     }
 }
 
-static COUNTER: AtomicU64 = AtomicU64::new(0);
 pub fn new_var() -> Bind {
-    let i = COUNTER.fetch_add(1, Ordering::SeqCst);
-    let name = format!("v{i}");
-    Bind(name)
+    Bind(new_id())
 }
 
 pub type Code = Vec<String>;
@@ -124,8 +122,6 @@ pub trait Lang {
 }
 
 pub fn emit<L: Lang>(root: ast::Root) -> anyhow::Result<String> {
-    COUNTER.store(0, Ordering::SeqCst);
-
     let mut out: Vec<String> = vec![];
     for line in root.0 {
         let mut n = 0;
