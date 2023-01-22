@@ -43,12 +43,16 @@ impl Lang for CSharp {
         let Slice(xs, range) = source;
         let i = range.0;
         let j = range.1;
+
+        let n = Bind(ast.1 .0.to_owned());
+        code.push(format!("var {n} = Convert.ToInt32({xs}[{i}]);"));
+
         let ty1 = typing::list(&ast);
         let ty2 = typing::unit_type(&ast.0);
 
         code.push(format!("var {bind} = new {ty1}();"));
         let k = new_var();
-        code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
+        code.push(format!("for (int {k}={i}+1; {k}<{j}; {k}++) {{"));
         let v = format!("{xs}[{k}]");
         let x = new_var();
         code.push(format!("\t{ty2} {x} = {};", unit_type_convert(&ast.0, &v)));

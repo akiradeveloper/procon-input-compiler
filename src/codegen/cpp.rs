@@ -54,10 +54,14 @@ impl Lang for Cpp {
         let Slice(xs, range) = source;
         let i = range.0;
         let j = range.1;
+
+        let n = Bind(ast.1 .0.to_owned());
+        code.push(format!("int {n} = atoi({xs}[{i}].c_str());"));
+
         let ty = typing::list(&ast);
         code.push(format!("{ty} {bind};"));
         let k = new_var();
-        code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
+        code.push(format!("for (int {k}={i}+1; {k}<{j}; {k}++) {{"));
 
         let mut inner_code = vec![];
         let unit_val = new_var();
