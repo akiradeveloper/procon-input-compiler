@@ -10,27 +10,22 @@ you should be bothered parsing the input.
 The syntax of the input is usually something like this:
 
 ```
-N M
-X1 Y1
-X2 Y2
-...
-XM YM
+N
+A1 A2 A3 ... AN
 ```
 
 You may be parsing the input by writing boilarplate code but
 imagine what if you can parse the input from the syntax itself.
 
 ```
-n: int, m: int
-xy: [(int,int); m]
+n: int
+a: [int; n]
 ```
 
 This is what Procon Input does.
 
-
-![スクリーンショット 2023-01-18 20 32 16](https://user-images.githubusercontent.com/785824/213160943-deb3fd95-5fe4-4dfa-9185-4403efeb10d3.png)
-![スクリーンショット 2023-01-20 21 03 33](https://user-images.githubusercontent.com/785824/213690840-7bd3c1b3-7754-4769-a08b-b73a3f623654.png)
-
+![スクリーンショット 2023-01-22 17 45 45](https://user-images.githubusercontent.com/785824/213907536-c5381fb4-2854-4208-8962-8f9d3859da5a.png)
+![スクリーンショット 2023-01-22 17 45 19](https://user-images.githubusercontent.com/785824/213907534-ae6c317e-d319-4868-9bad-687bb6d45285.png)
 
 ## Supported Languages
 
@@ -52,9 +47,9 @@ This is what Procon Input does.
 
 | Bench# | Python | C++ | Nim | Ruby | Java | C#  | Rust | Kotlin |
 |--------|--------|-----|-----|------|------|-----|------|--------|
-| 1      | 35     | 15  | 24  | 74   | 117  | 65  | 8    | 300    |
-| 2      | 123    | 65  | 68  | 199  | 126  | 135 | 24   | 273    |
-| 3      | 15     | 4   | 8   | 52   | 180  | 32  | 4    | 252    |
+| 1      | 36     | 14  | 24  | 79   | 120  | 66  | 8    | 294    |
+| 2      | 120    | 22  | 68  | 192  | 127  | 139 | 23   | 290    |
+| 3      | 16     | 4   | 8   | 52   | 113  | 32  | 4    | 262    |
 
 - bench-case
   - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
