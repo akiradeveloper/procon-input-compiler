@@ -35,7 +35,10 @@ impl Lang for Cpp {
         let i = range.0;
         let j = range.1;
         let ty = typing::array(&ast);
+        let n = Index(ast.1 .0.clone());
         code.push(format!("{ty} {bind};"));
+        code.push(format!("{bind}.reserve({n});"));
+
         let k = new_var();
         code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
 
@@ -60,6 +63,8 @@ impl Lang for Cpp {
 
         let ty = typing::list(&ast);
         code.push(format!("{ty} {bind};"));
+        code.push(format!("{bind}.reserve({n});"));
+
         let k = new_var();
         code.push(format!("for (int {k}={i}+1; {k}<{j}; {k}++) {{"));
 
@@ -76,9 +81,10 @@ impl Lang for Cpp {
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let mut code = vec![];
         let ty = format!("std::vector<{}>", typing::tuple_like(&ast.0));
-        let n = &ast.1;
-        let n = Index(n.0.clone());
+        let n = Index(ast.1 .0.clone());
         code.push(format!("{ty} {bind};"));
+        code.push(format!("{bind}.reserve({n});"));
+
         let k = new_var();
         code.push(format!("for (int {k}=0; {k}<{n}; {k}++) {{"));
 
