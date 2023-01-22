@@ -23,6 +23,8 @@ pub enum Lang {
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
+    COUNTER.store(0, Ordering::SeqCst);
+
     // https://github.com/rust-bakery/nom/issues/1571#issuecomment-1359257249
     let out = parse::parse(input.as_ref()).map_err(|e| e.to_owned())?.1;
     let out = match lang {
