@@ -16,7 +16,7 @@ pub enum UnitType {
 #[derive(Debug)]
 pub struct Array(pub UnitType, pub Len);
 #[derive(Debug)]
-pub struct List(pub UnitType);
+pub struct List(pub UnitType, pub Len);
 #[derive(Debug)]
 pub enum TupleElem {
     UnitType(UnitType),

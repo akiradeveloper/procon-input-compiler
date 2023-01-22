@@ -3,79 +3,41 @@ use crate::ast::*;
 use crate::new_id;
 
 mod arity {
-    use crate::ast::*;
-
-    #[derive(Clone, Debug)]
-    pub enum Arity {
-        Literal(String),
-        Inf,
-    }
-    impl Arity {
-        pub fn n(n: usize) -> Arity {
-            Arity::Literal(n.to_string())
-        }
-    }
-    impl std::ops::Add for Arity {
-        type Output = Arity;
-        fn add(self, rhs: Self) -> Self::Output {
-            match (&self, &rhs) {
-                (Arity::Literal(a), Arity::Literal(b)) => Arity::Literal(format!("({a} + {b})")),
-                (_, Arity::Inf) => Arity::Inf,
-                (Arity::Inf, _) => Arity::Inf,
-            }
-        }
-    }
-    impl std::ops::Sub for Arity {
-        type Output = Arity;
-        fn sub(self, rhs: Self) -> Self::Output {
-            match (&self, &rhs) {
-                (Arity::Literal(a), Arity::Literal(b)) => Arity::Literal(format!("({a} - {b})")),
-                _ => unreachable!(),
-            }
-        }
-    }
-    #[test]
-    fn test_arity() {
-        let a = Arity::n(10);
-        let b = Arity::Literal("m".to_string());
-        let c = Arity::n(20);
-        dbg!(a.clone() - b.clone());
-        dbg!(a.clone() - c.clone());
-        dbg!(a.clone() + b - c);
-    }
+    use super::*;
 
     pub trait GetArity {
-        fn arity(&self) -> Arity;
+        fn arity(&self) -> Index;
     }
 
     impl GetArity for UnitType {
-        fn arity(&self) -> Arity {
-            Arity::n(1)
+        fn arity(&self) -> Index {
+            Index::n(1)
         }
     }
     impl GetArity for Array {
-        fn arity(&self) -> Arity {
+        fn arity(&self) -> Index {
             let len = &self.1;
-            Arity::Literal(len.0.to_owned())
+            Index(len.0.to_owned())
         }
     }
     impl GetArity for List {
-        fn arity(&self) -> Arity {
-            Arity::Inf
+        fn arity(&self) -> Index {
+            let n = &self.1;
+            Index::n(1) + Index(n.0.to_owned())
         }
     }
     impl GetArity for TupleElem {
-        fn arity(&self) -> Arity {
+        fn arity(&self) -> Index {
             match self {
-                TupleElem::UnitType(_) => Arity::n(1),
-                TupleElem::Array(x) => Arity::Literal(x.1 .0.clone()),
-                TupleElem::List(_) => Arity::Inf,
+                TupleElem::UnitType(x) => x.arity(),
+                TupleElem::Array(x) => x.arity(),
+                TupleElem::List(x) => x.arity(),
             }
         }
     }
     impl GetArity for Tuple {
-        fn arity(&self) -> Arity {
-            let mut sum = Arity::n(0);
+        fn arity(&self) -> Index {
+            let mut sum = Index::n(0);
             for e in &self.0 {
                 sum = sum + e.arity();
             }
@@ -83,7 +45,7 @@ mod arity {
         }
     }
     impl GetArity for TupleLike {
-        fn arity(&self) -> Arity {
+        fn arity(&self) -> Index {
             match self {
                 TupleLike::Array(x) => x.arity(),
                 TupleLike::Tuple(x) => x.arity(),
@@ -92,7 +54,7 @@ mod arity {
         }
     }
     impl GetArity for Type {
-        fn arity(&self) -> Arity {
+        fn arity(&self) -> Index {
             match self {
                 Type::UnitType(x) => x.arity(),
                 Type::TupleLike(x) => x.arity(),
@@ -132,11 +94,24 @@ impl Index {
     fn zero() -> Index {
         Index("0".to_string())
     }
+    fn n(n: u64) -> Index {
+        Index(format!("{n}"))
+    }
 }
-fn add_or(x: Index, y: Arity, or: Index) -> Index {
-    match (x, y) {
-        (Index(x), Arity::Literal(y)) => Index(format!("({x} + {y})")),
-        (_, Arity::Inf) => or,
+impl std::ops::Add for Index {
+    type Output = Index;
+    fn add(self, rhs: Self) -> Self::Output {
+        match (&self, &rhs) {
+            (Index(a), Index(b)) => Index(format!("({a} + {b})")),
+        }
+    }
+}
+impl std::ops::Sub for Index {
+    type Output = Index;
+    fn sub(self, rhs: Self) -> Self::Output {
+        match (&self, &rhs) {
+            (Index(a), Index(b)) => Index(format!("({a} - {b})")),
+        }
     }
 }
 
@@ -177,7 +152,7 @@ pub trait Lang {
                 for elem in elems {
                     match &elem {
                         TupleElem::UnitType(x) => {
-                            let last = add_or(head.clone(), x.arity(), la.clone());
+                            let last = head.clone() + x.arity();
                             let ran = Range(head, last.clone());
                             let var = new_var();
                             let mut code =
@@ -187,7 +162,7 @@ pub trait Lang {
                             head = last;
                         }
                         TupleElem::Array(x) => {
-                            let last = add_or(head.clone(), x.arity(), la.clone());
+                            let last = head.clone() + x.arity();
                             let ran = Range(head, last.clone());
                             let var = new_var();
                             let mut code =
@@ -197,7 +172,7 @@ pub trait Lang {
                             head = last;
                         }
                         TupleElem::List(x) => {
-                            let last = add_or(head.clone(), x.arity(), la.clone());
+                            let last = head.clone() + x.arity();
                             let ran = Range(head, last.clone());
                             let var = new_var();
                             let mut code =
@@ -240,14 +215,14 @@ pub fn emit<L: Lang>(root: ast::Root) -> anyhow::Result<String> {
                 let var = Bind(var.0);
                 match &typ {
                     Type::UnitType(x) => {
-                        let last = add_or(head.clone(), x.arity(), len.clone());
+                        let last = head.clone() + x.arity();
                         let ran = Range(head, last.clone());
                         let mut code = L::unit_type(var, x, Slice(line_var.clone(), ran));
                         out.append(&mut code);
                         head = last;
                     }
                     Type::TupleLike(x) => {
-                        let last = add_or(head.clone(), x.arity(), len.clone());
+                        let last = head.clone() + x.arity();
                         let ran = Range(head, last.clone());
                         let mut code = L::tuple_like(var, x, Slice(line_var.clone(), ran))?;
                         out.append(&mut code);

@@ -6,7 +6,7 @@ use nom::multi::{many1, separated_list0, separated_list1};
 use nom::sequence::{delimited, separated_pair};
 use nom::IResult;
 
-use crate::ast::*;
+use crate::{ast::*, new_id};
 
 mod generic;
 use generic::*;
@@ -40,7 +40,7 @@ fn parse_array(i: &str) -> IResult<&str, Array> {
     delimited(char('['), p, char(']'))(i)
 }
 fn parse_list(i: &str) -> IResult<&str, List> {
-    let p = map(ws(parse_unit_type), List);
+    let p = map(ws(parse_unit_type), |x| List(x, Len(new_id())));
     delimited(char('['), p, char(']'))(i)
 }
 fn parse_tuple(i: &str) -> IResult<&str, Tuple> {
