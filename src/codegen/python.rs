@@ -26,12 +26,20 @@ impl Lang for Python {
         vec![code]
     }
     fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
-        let Slice(slice_name, range) = source;
-        let slice = format!("{}[{}:{}]", slice_name, range.0, range.1);
+        let mut code = vec![];
+
+        let Slice(xs, range) = source;
+        let i = range.0;
+        let j = range.1;
+
+        let n = Bind(ast.1 .0.to_owned());
+        code.push(format!("{n} = int({xs}[{i}])"));
+
+        let slice = format!("{}[({}+1):{}]", xs, i, j);
         let ty = &ast.0;
         let rhs = format!("[{} for x in {slice}]", unit_type_convert(ty, "x"));
-        let code = format!("{bind} = {rhs}");
-        vec![code]
+        code.push(format!("{bind} = {rhs}"));
+        code
     }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let ty = &ast.0;

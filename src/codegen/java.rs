@@ -38,10 +38,14 @@ impl Lang for Java {
         let Slice(xs, range) = source;
         let i = range.0;
         let j = range.1;
+
+        let n = Bind(ast.1 .0.to_owned());
+        code.push(format!("var {n} = Integer.parseInt({xs}[{i}]);"));
+
         let ty = typing::list(&ast);
         code.push(format!("var {bind} = new {ty}();"));
         let k = new_var();
-        code.push(format!("for (int {k}={i}; {k}<{j}; {k}++) {{"));
+        code.push(format!("for (int {k}={i}+1; {k}<{j}; {k}++) {{"));
         let x = new_var();
         let v = format!("{xs}[{k}]");
         let v = unit_type_convert(&ast.0, &v);

@@ -27,16 +27,23 @@ impl Lang for Ruby {
         vec![code]
     }
     fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
+        let mut code = vec![];
+
         let Slice(xs, range) = source;
         let i = range.0;
         let j = range.1;
+
+        let n = Bind(ast.1 .0.to_owned());
+        code.push(format!("{n} = {xs}[{i}].to_i"));
+
         let ty = &ast.0;
         let v = format!(
-            "{xs}[{i}...{j}].map {{ |x| {} }}",
+            "{xs}[({i}+1)...{j}].map {{ |x| {} }}",
             unit_type_convert(&ty, "x")
         );
-        let code = format!("{bind} = {v}");
-        vec![code]
+        code.push(format!("{bind} = {v}"));
+
+        code
     }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let ty = &ast.0;
