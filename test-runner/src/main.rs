@@ -59,6 +59,7 @@ impl TestTask<'_> {
                 "csharp" => Compiler::compile(Compiler::Lang::CSharp, &parser)?,
                 "rust" => Compiler::compile(Compiler::Lang::Rust, &parser)?,
                 "kotlin" => Compiler::compile(Compiler::Lang::Kotlin, &parser)?,
+                "cpp2" => Compiler::compile(Compiler::Lang::Cpp2, &parser)?,
                 _ => unreachable!(),
             }
         };
@@ -390,6 +391,8 @@ struct BenchResult {
     rust: u64,
     #[tabled(rename = "Kotlin")]
     kotlin: u64,
+    #[tabled(rename = "Cpp2")]
+    cpp2: u64,
 }
 fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
     let mut rows: Vec<BenchResult> = vec![];
@@ -407,6 +410,7 @@ fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
                 "csharp" => row.csharp = du,
                 "rust" => row.rust = du,
                 "kotlin" => row.kotlin = du,
+                "cpp2" => row.cpp2 = du,
                 _ => unreachable!(),
             }
         }

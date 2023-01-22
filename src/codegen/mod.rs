@@ -66,6 +66,7 @@ mod arity {
 use arity::*;
 
 pub mod cpp;
+pub mod cpp2;
 pub mod csharp;
 pub mod java;
 pub mod kotlin;
@@ -76,6 +77,11 @@ pub mod rust;
 
 #[derive(Clone)]
 pub struct Bind(pub String);
+impl Bind {
+    fn null() -> Bind {
+        Bind("DEADBEAF".to_string())
+    }
+}
 impl std::fmt::Display for Bind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
@@ -96,6 +102,9 @@ impl Index {
     }
     fn n(n: u64) -> Index {
         Index(format!("{n}"))
+    }
+    fn null() -> Index {
+        Index("DEADBEAF".to_string())
     }
 }
 impl std::ops::Add for Index {
