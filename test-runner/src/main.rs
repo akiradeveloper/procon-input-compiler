@@ -57,6 +57,7 @@ impl TestTask<'_> {
                 "nim" => Compiler::compile(Compiler::Lang::Nim, &parser)?,
                 "ruby" => Compiler::compile(Compiler::Lang::Ruby, &parser)?,
                 "java" => Compiler::compile(Compiler::Lang::Java, &parser)?,
+                "java-stream" => Compiler::compile(Compiler::Lang::JavaStream, &parser)?,
                 "csharp" => Compiler::compile(Compiler::Lang::CSharp, &parser)?,
                 "rust" => Compiler::compile(Compiler::Lang::Rust, &parser)?,
                 "kotlin" => Compiler::compile(Compiler::Lang::Kotlin, &parser)?,
@@ -387,6 +388,8 @@ struct BenchResult {
     ruby: u64,
     #[tabled(rename = "Java")]
     java: u64,
+    #[tabled(rename = "Java (Stream)")]
+    java_stream: u64,
     #[tabled(rename = "C#")]
     csharp: u64,
     #[tabled(rename = "Rust")]
@@ -408,6 +411,7 @@ fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
                 "nim" => row.nim = du,
                 "ruby" => row.ruby = du,
                 "java" => row.java = du,
+                "java-stream" => row.java_stream = du,
                 "csharp" => row.csharp = du,
                 "rust" => row.rust = du,
                 "kotlin" => row.kotlin = du,

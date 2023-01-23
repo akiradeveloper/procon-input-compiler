@@ -29,7 +29,7 @@ impl readline::Lang for Java {
         let x = new_var();
         let v = format!("{xs}[{k}]");
         let v = unit_type_convert(&ast.0, &v);
-        code.push(format!("\tvar {x} = {v};"));
+        code.push(format!("\tvar {x} = {v}; {bind}.add({x});"));
         code.push(format!("}}"));
         code
     }
@@ -49,7 +49,7 @@ impl readline::Lang for Java {
         let x = new_var();
         let v = format!("{xs}[{k}]");
         let v = unit_type_convert(&ast.0, &v);
-        code.push(format!("\tvar {x} = {v};"));
+        code.push(format!("\tvar {x} = {v}; {bind}.add({x});"));
         code.push(format!("}}"));
         code
     }
@@ -87,7 +87,7 @@ impl readline::Lang for Java {
     }
 }
 type Type = String;
-mod typing {
+pub mod typing {
     use super::*;
     pub fn unit_type(ty: &ast::UnitType) -> Type {
         match ty {
