@@ -1,7 +1,7 @@
 use super::*;
 
 pub struct Kotlin;
-impl Lang for Kotlin {
+impl readline::Lang for Kotlin {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut code = vec![];
         code.push(format!("val {bind} = readLine()!!.split(' ');"));

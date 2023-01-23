@@ -14,13 +14,13 @@ pub fn new_id() -> String {
 pub enum Lang {
     Python,
     Cpp,
+    CppStream,
     Nim,
     Ruby,
     Java,
     CSharp,
     Rust,
     Kotlin,
-    Cpp0,
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
@@ -29,15 +29,15 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
     // https://github.com/rust-bakery/nom/issues/1571#issuecomment-1359257249
     let out = parse::parse(input.as_ref()).map_err(|e| e.to_owned())?.1;
     let out = match lang {
-        Lang::Python => codegen::emit::<codegen::python::Python>(out),
-        Lang::Cpp => codegen::emit::<codegen::cpp::Cpp>(out),
-        Lang::Nim => codegen::emit::<codegen::nim::Nim>(out),
-        Lang::Ruby => codegen::emit::<codegen::ruby::Ruby>(out),
-        Lang::Java => codegen::emit::<codegen::java::Java>(out),
-        Lang::CSharp => codegen::emit::<codegen::csharp::CSharp>(out),
-        Lang::Rust => codegen::emit::<codegen::rust::Rust>(out),
-        Lang::Kotlin => codegen::emit::<codegen::kotlin::Kotlin>(out),
-        Lang::Cpp0 => codegen::emit::<codegen::cpp0::Cpp>(out),
+        Lang::Python => codegen::readline::emit::<codegen::python::Python>(out),
+        Lang::Cpp => codegen::readline::emit::<codegen::cpp::Cpp>(out),
+        Lang::CppStream => codegen::stream::emit::<codegen::cpp_stream::CppStream>(out),
+        Lang::Nim => codegen::readline::emit::<codegen::nim::Nim>(out),
+        Lang::Ruby => codegen::readline::emit::<codegen::ruby::Ruby>(out),
+        Lang::Java => codegen::readline::emit::<codegen::java::Java>(out),
+        Lang::CSharp => codegen::readline::emit::<codegen::csharp::CSharp>(out),
+        Lang::Rust => codegen::readline::emit::<codegen::rust::Rust>(out),
+        Lang::Kotlin => codegen::readline::emit::<codegen::kotlin::Kotlin>(out),
     }?;
     Ok(out)
 }

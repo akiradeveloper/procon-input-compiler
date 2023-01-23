@@ -1,6 +1,6 @@
 use super::*;
 pub struct Rust;
-impl Lang for Rust {
+impl readline::Lang for Rust {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut code = vec![];
         let buf = new_var();

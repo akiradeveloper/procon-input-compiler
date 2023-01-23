@@ -1,7 +1,7 @@
 use super::*;
 
 pub struct Nim;
-impl Lang for Nim {
+impl readline::Lang for Nim {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut code = vec![];
         code.push(format!("let {bind} = readLine(stdin).split(' ')"));

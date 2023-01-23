@@ -1,7 +1,7 @@
 use super::*;
 
 pub struct Ruby;
-impl Lang for Ruby {
+impl readline::Lang for Ruby {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut code = vec![];
         code.push(format!("{bind} = gets.chomp.split"));
