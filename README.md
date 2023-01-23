@@ -45,21 +45,22 @@ TupleLike := Array | List | Tuple
 Matrix := [TupleLike; Len]
 Type := UnitType | TupleLike | Matrix
 ```
-### Example 1: Vertial Array
+### Example 1: Matrix
 
 ```
-3
-10
-20
-40
+4 3
+1 2 3
+4 5 6
+7 8 9
+10 11 12
 ```
 
 ```
-n: int
-a: [(int); n]
+n: int, m: int
+mat: [[int;m]; n]
 ```
 
-### Example 2: Jagged Array (Graph)
+### Example 2: Jagged Array
 
 `int0` interprets 1-indexed number to a 0-indexed number.
 
@@ -104,19 +105,20 @@ graph TD
   v2 -->|2.5| v4(4)
 ```
 
-### Example 4: (n-m) Matrix
+### Example 4: Vertical Array
+
+Single element tuple `(A)` is interpreted as `A`.
 
 ```
-4 3
-1 2 3
-4 5 6
-7 8 9
-10 11 12
+3
+10
+20
+40
 ```
 
 ```
-n: int, m: int
-mat: [[int;m]; n]
+n: int
+a: [(int); n]
 ```
 
 ## Supported Languages
