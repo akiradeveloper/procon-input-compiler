@@ -53,13 +53,13 @@ impl TestTask<'_> {
             match self.lang_name.as_ref() {
                 "python" => Compiler::compile(Compiler::Lang::Python, &parser)?,
                 "cpp" => Compiler::compile(Compiler::Lang::Cpp, &parser)?,
+                "cpp-stream" => Compiler::compile(Compiler::Lang::CppStream, &parser)?,
                 "nim" => Compiler::compile(Compiler::Lang::Nim, &parser)?,
                 "ruby" => Compiler::compile(Compiler::Lang::Ruby, &parser)?,
                 "java" => Compiler::compile(Compiler::Lang::Java, &parser)?,
                 "csharp" => Compiler::compile(Compiler::Lang::CSharp, &parser)?,
                 "rust" => Compiler::compile(Compiler::Lang::Rust, &parser)?,
                 "kotlin" => Compiler::compile(Compiler::Lang::Kotlin, &parser)?,
-                "cpp0" => Compiler::compile(Compiler::Lang::Cpp0, &parser)?,
                 _ => unreachable!(),
             }
         };
@@ -379,6 +379,8 @@ struct BenchResult {
     python: u64,
     #[tabled(rename = "C++")]
     cpp: u64,
+    #[tabled(rename = "C++ (Stream)")]
+    cpp_stream: u64,
     #[tabled(rename = "Nim")]
     nim: u64,
     #[tabled(rename = "Ruby")]
@@ -391,8 +393,6 @@ struct BenchResult {
     rust: u64,
     #[tabled(rename = "Kotlin")]
     kotlin: u64,
-    #[tabled(rename = "Cpp0")]
-    cpp0: u64,
 }
 fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
     let mut rows: Vec<BenchResult> = vec![];
@@ -404,13 +404,13 @@ fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
             match lang.as_str() {
                 "python" => row.python = du,
                 "cpp" => row.cpp = du,
+                "cpp-stream" => row.cpp_stream = du,
                 "nim" => row.nim = du,
                 "ruby" => row.ruby = du,
                 "java" => row.java = du,
                 "csharp" => row.csharp = du,
                 "rust" => row.rust = du,
                 "kotlin" => row.kotlin = du,
-                "cpp0" => row.cpp0 = du,
                 _ => unreachable!(),
             }
         }

@@ -2,7 +2,7 @@ use crate::ast;
 use crate::ast::*;
 use crate::new_id;
 
-mod arity {
+pub mod readline {
     use super::*;
 
     pub trait GetArity {
@@ -62,11 +62,194 @@ mod arity {
             }
         }
     }
+
+    pub trait Lang {
+        fn read_line(bind: Bind) -> (Code, Index);
+        fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code;
+        fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code;
+        fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code;
+        fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error>;
+        fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error>;
+        fn tuple_like(bind: Bind, ast: &ast::TupleLike, source: Slice) -> Result<Code, Error> {
+            match ast {
+                ast::TupleLike::Array(ast) => Ok(Self::array(bind, ast, source)),
+                ast::TupleLike::List(ast) => Ok(Self::list(bind, ast, source)),
+                ast::TupleLike::Tuple(ast::Tuple(elems)) => {
+                    let Slice(line_name, Range(fi, la)) = source;
+                    let mut out = vec![];
+                    let mut inner = vec![];
+                    let mut head = fi;
+                    for elem in elems {
+                        match &elem {
+                            TupleElem::UnitType(x) => {
+                                let last = head.clone() + x.arity();
+                                let ran = Range(head, last.clone());
+                                let var = new_var();
+                                let mut code =
+                                    Self::unit_type(var.clone(), x, Slice(line_name.clone(), ran));
+                                out.append(&mut code);
+                                inner.push((elem, var));
+                                head = last;
+                            }
+                            TupleElem::Array(x) => {
+                                let last = head.clone() + x.arity();
+                                let ran = Range(head, last.clone());
+                                let var = new_var();
+                                let mut code =
+                                    Self::array(var.clone(), x, Slice(line_name.clone(), ran));
+                                out.append(&mut code);
+                                inner.push((elem, var));
+                                head = last;
+                            }
+                            TupleElem::List(x) => {
+                                let last = head.clone() + x.arity();
+                                let ran = Range(head, last.clone());
+                                let var = new_var();
+                                let mut code =
+                                    Self::list(var.clone(), x, Slice(line_name.clone(), ran));
+                                out.append(&mut code);
+                                inner.push((elem, var));
+                                head = last;
+                            }
+                        }
+                    }
+                    let mut code = Self::tuple(bind, inner)?;
+                    out.append(&mut code);
+                    Ok(out)
+                }
+            }
+        }
+    }
+
+    pub fn emit<L: Lang>(root: ast::Root) -> anyhow::Result<String> {
+        let mut out: Vec<String> = vec![];
+        for line in root.0 {
+            let mut n = 0;
+            for Definition(_, typ) in &line.0 {
+                match typ {
+                    Type::UnitType(_) => {
+                        n += 1;
+                    }
+                    Type::TupleLike(_) => {
+                        n += 1;
+                    }
+                    Type::Matrix(_) => {}
+                }
+            }
+            if n > 0 {
+                let line_var = new_var();
+                let (mut code, len) = L::read_line(line_var.clone());
+                out.append(&mut code);
+                let mut head = Index::zero();
+                for Definition(var, typ) in line.0 {
+                    let var = Bind(var.0);
+                    match &typ {
+                        Type::UnitType(x) => {
+                            let last = head.clone() + x.arity();
+                            let ran = Range(head, last.clone());
+                            let mut code = L::unit_type(var, x, Slice(line_var.clone(), ran));
+                            out.append(&mut code);
+                            head = last;
+                        }
+                        Type::TupleLike(x) => {
+                            let last = head.clone() + x.arity();
+                            let ran = Range(head, last.clone());
+                            let mut code = L::tuple_like(var, x, Slice(line_var.clone(), ran))?;
+                            out.append(&mut code);
+                            head = last;
+                        }
+                        _ => unreachable!(),
+                    }
+                }
+            } else {
+                for Definition(var, typ) in line.0 {
+                    let var = Bind(var.0);
+                    match &typ {
+                        Type::Matrix(x) => {
+                            let mut code = L::matrix(var, x)?;
+                            out.append(&mut code);
+                        }
+                        _ => unreachable!(),
+                    }
+                }
+            }
+        }
+        Ok(out.join("\n"))
+    }
 }
-use arity::*;
+
+pub mod stream {
+    use super::*;
+    pub trait Lang {
+        fn unit_type(bind: Bind, ast: &ast::UnitType) -> Code;
+        fn array(bind: Bind, ast: &ast::Array) -> Code;
+        fn list(bind: Bind, ast: &ast::List) -> Code;
+        fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error>;
+        fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error>;
+        fn tuple_like(bind: Bind, ast: &ast::TupleLike) -> Result<Code, Error> {
+            match ast {
+                ast::TupleLike::Array(ast) => Ok(Self::array(bind, ast)),
+                ast::TupleLike::List(ast) => Ok(Self::list(bind, ast)),
+                ast::TupleLike::Tuple(ast::Tuple(elems)) => {
+                    let mut out = vec![];
+                    let mut inner = vec![];
+                    for elem in elems {
+                        match &elem {
+                            TupleElem::UnitType(x) => {
+                                let var = new_var();
+                                let mut code = Self::unit_type(var.clone(), x);
+                                out.append(&mut code);
+                                inner.push((elem, var));
+                            }
+                            TupleElem::Array(x) => {
+                                let var = new_var();
+                                let mut code = Self::array(var.clone(), x);
+                                out.append(&mut code);
+                                inner.push((elem, var));
+                            }
+                            TupleElem::List(x) => {
+                                let var = new_var();
+                                let mut code = Self::list(var.clone(), x);
+                                out.append(&mut code);
+                                inner.push((elem, var));
+                            }
+                        }
+                    }
+                    let mut code = Self::tuple(bind, inner)?;
+                    out.append(&mut code);
+                    Ok(out)
+                }
+            }
+        }
+    }
+    pub fn emit<L: Lang>(root: ast::Root) -> anyhow::Result<String> {
+        let mut out: Code = vec![];
+        for line in root.0 {
+            for Definition(var, typ) in line.0 {
+                let var = Bind(var.0);
+                match &typ {
+                    Type::UnitType(x) => {
+                        let mut code = L::unit_type(var, x);
+                        out.append(&mut code);
+                    }
+                    Type::TupleLike(x) => {
+                        let mut code = L::tuple_like(var, x)?;
+                        out.append(&mut code);
+                    }
+                    Type::Matrix(x) => {
+                        let mut code = L::matrix(var, x)?;
+                        out.append(&mut code);
+                    }
+                    _ => unreachable!(),
+                }
+            }
+        }
+        Ok(out.join("\n"))
+    }
+}
 
 pub mod cpp;
-pub mod cpp0;
+pub mod cpp_stream;
 pub mod csharp;
 pub mod java;
 pub mod kotlin;
@@ -87,8 +270,7 @@ impl std::fmt::Display for Bind {
         write!(f, "{}", self.0)
     }
 }
-struct Range(pub Index, pub Index);
-struct Slice(pub Bind, pub Range);
+
 #[derive(Clone)]
 struct Index(String);
 impl std::fmt::Display for Index {
@@ -102,9 +284,6 @@ impl Index {
     }
     fn n(n: u64) -> Index {
         Index(format!("{n}"))
-    }
-    fn null() -> Index {
-        Index("DEADBEAF".to_string())
     }
 }
 impl std::ops::Add for Index {
@@ -124,6 +303,9 @@ impl std::ops::Sub for Index {
     }
 }
 
+struct Range(pub Index, pub Index);
+struct Slice(pub Bind, pub Range);
+
 pub fn new_var() -> Bind {
     Bind(new_id())
 }
@@ -140,118 +322,4 @@ use thiserror::Error;
 pub enum Error {
     #[error("Tuple isn't supported.")]
     TupleNotSupported,
-}
-
-pub trait Lang {
-    fn read_line(bind: Bind) -> (Code, Index);
-    fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code;
-    fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code;
-    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code;
-    fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error>;
-    fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error>;
-    fn tuple_like(bind: Bind, ast: &ast::TupleLike, source: Slice) -> Result<Code, Error> {
-        match ast {
-            ast::TupleLike::Array(ast) => Ok(Self::array(bind, ast, source)),
-            ast::TupleLike::List(ast) => Ok(Self::list(bind, ast, source)),
-            ast::TupleLike::Tuple(ast::Tuple(elems)) => {
-                let Slice(line_name, Range(fi, la)) = source;
-                let mut out = vec![];
-                let mut inner = vec![];
-                let mut head = fi;
-                for elem in elems {
-                    match &elem {
-                        TupleElem::UnitType(x) => {
-                            let last = head.clone() + x.arity();
-                            let ran = Range(head, last.clone());
-                            let var = new_var();
-                            let mut code =
-                                Self::unit_type(var.clone(), x, Slice(line_name.clone(), ran));
-                            out.append(&mut code);
-                            inner.push((elem, var));
-                            head = last;
-                        }
-                        TupleElem::Array(x) => {
-                            let last = head.clone() + x.arity();
-                            let ran = Range(head, last.clone());
-                            let var = new_var();
-                            let mut code =
-                                Self::array(var.clone(), x, Slice(line_name.clone(), ran));
-                            out.append(&mut code);
-                            inner.push((elem, var));
-                            head = last;
-                        }
-                        TupleElem::List(x) => {
-                            let last = head.clone() + x.arity();
-                            let ran = Range(head, last.clone());
-                            let var = new_var();
-                            let mut code =
-                                Self::list(var.clone(), x, Slice(line_name.clone(), ran));
-                            out.append(&mut code);
-                            inner.push((elem, var));
-                            head = last;
-                        }
-                    }
-                }
-                let mut code = Self::tuple(bind, inner)?;
-                out.append(&mut code);
-                Ok(out)
-            }
-        }
-    }
-}
-
-pub fn emit<L: Lang>(root: ast::Root) -> anyhow::Result<String> {
-    let mut out: Vec<String> = vec![];
-    for line in root.0 {
-        let mut n = 0;
-        for Definition(_, typ) in &line.0 {
-            match typ {
-                Type::UnitType(_) => {
-                    n += 1;
-                }
-                Type::TupleLike(_) => {
-                    n += 1;
-                }
-                Type::Matrix(_) => {}
-            }
-        }
-        if n > 0 {
-            let line_var = new_var();
-            let (mut code, len) = L::read_line(line_var.clone());
-            out.append(&mut code);
-            let mut head = Index::zero();
-            for Definition(var, typ) in line.0 {
-                let var = Bind(var.0);
-                match &typ {
-                    Type::UnitType(x) => {
-                        let last = head.clone() + x.arity();
-                        let ran = Range(head, last.clone());
-                        let mut code = L::unit_type(var, x, Slice(line_var.clone(), ran));
-                        out.append(&mut code);
-                        head = last;
-                    }
-                    Type::TupleLike(x) => {
-                        let last = head.clone() + x.arity();
-                        let ran = Range(head, last.clone());
-                        let mut code = L::tuple_like(var, x, Slice(line_var.clone(), ran))?;
-                        out.append(&mut code);
-                        head = last;
-                    }
-                    _ => unreachable!(),
-                }
-            }
-        } else {
-            for Definition(var, typ) in line.0 {
-                let var = Bind(var.0);
-                match &typ {
-                    Type::Matrix(x) => {
-                        let mut code = L::matrix(var, x)?;
-                        out.append(&mut code);
-                    }
-                    _ => unreachable!(),
-                }
-            }
-        }
-    }
-    Ok(out.join("\n"))
 }

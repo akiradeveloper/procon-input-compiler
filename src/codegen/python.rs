@@ -2,7 +2,7 @@ use super::*;
 
 pub struct Python;
 
-impl Lang for Python {
+impl readline::Lang for Python {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut out = vec![];
         let code = format!("{bind} = input().split()");

@@ -2,7 +2,7 @@ use super::*;
 
 pub struct CSharp;
 
-impl Lang for CSharp {
+impl readline::Lang for CSharp {
     fn read_line(bind: Bind) -> (Code, Index) {
         let mut code = vec![];
         code.push(format!("var {bind} = Console.ReadLine().Split(' ');"));
