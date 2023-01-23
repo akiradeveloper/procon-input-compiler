@@ -11,6 +11,7 @@ pub fn new_id() -> String {
     name
 }
 
+#[derive(PartialEq)]
 pub enum Lang {
     Python,
     Cpp,
