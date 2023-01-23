@@ -57,7 +57,7 @@ impl stream::Lang for JavaStream {
         let mut inner_code = vec![];
         let tuple = new_var();
         inner_code.append(&mut Self::tuple_like(tuple.clone(), &ast.0)?);
-        inner_code.push(format!("\t{bind}.add({tuple});"));
+        inner_code.push(format!("{bind}.add({tuple});"));
         append_code(&mut code, "\t", inner_code);
 
         code.push(format!("}}"));
