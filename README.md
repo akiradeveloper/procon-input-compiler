@@ -139,11 +139,12 @@ a: [(int); n]
 
 ### Performance (ms)
 
-| Bench# | Python | C++ | Nim | Ruby | Java | C#  | Rust | Kotlin |
-|--------|--------|-----|-----|------|------|-----|------|--------|
-| 1      | 36     | 14  | 24  | 79   | 120  | 66  | 8    | 294    |
-| 2      | 120    | 22  | 68  | 192  | 127  | 139 | 23   | 290    |
-| 3      | 16     | 4   | 8   | 52   | 113  | 32  | 4    | 262    |
+| Bench# | Python | C++ | C++ (Stream) | Nim | Ruby | Java | Java (Stream) | C#  | Rust | Kotlin |
+|--------|--------|-----|--------------|-----|------|------|---------------|-----|------|--------|
+| 1      | 37     | 14  | 15           | 23  | 76   | 162  | 464           | 69  | 7    | 309    |
+| 2      | 121    | 61  | 22           | 69  | 209  | 141  | 271           | 152 | 23   | 296    |
+| 3      | 15     | 4   | 4            | 8   | 56   | 109  | 135           | 34  | 3    | 255    |
+
 
 - bench-case
   - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
