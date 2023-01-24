@@ -83,7 +83,7 @@ fn scan_unit_type(bind: Bind, ty: &ast::UnitType) -> Code {
             format!("var {bind} = input.nextDouble();")
         }
         ast::UnitType::Int0 => {
-            format!("var {bind} = (input.nexteInt()-1);")
+            format!("var {bind} = (input.nextInt()-1);")
         }
         ast::UnitType::Str => {
             format!("var {bind} = input.next();")
