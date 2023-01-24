@@ -261,11 +261,6 @@ pub mod rust;
 
 #[derive(Clone)]
 pub struct Bind(pub String);
-impl Bind {
-    fn null() -> Bind {
-        Bind("DEADBEAF".to_string())
-    }
-}
 impl std::fmt::Display for Bind {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
