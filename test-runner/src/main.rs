@@ -61,6 +61,7 @@ impl TestTask<'_> {
                 "csharp" => Compiler::compile(Compiler::Lang::CSharp, &parser)?,
                 "rust" => Compiler::compile(Compiler::Lang::Rust, &parser)?,
                 "kotlin" => Compiler::compile(Compiler::Lang::Kotlin, &parser)?,
+                "go-stream" => Compiler::compile(Compiler::Lang::GoStream, &parser)?,
                 _ => unreachable!(),
             }
         };
@@ -396,6 +397,8 @@ struct BenchResult {
     rust: u64,
     #[tabled(rename = "Kotlin")]
     kotlin: u64,
+    #[tabled(rename = "Go (Stream)")]
+    go_stream: u64,
 }
 fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
     let mut rows: Vec<BenchResult> = vec![];
@@ -415,6 +418,7 @@ fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
                 "csharp" => row.csharp = du,
                 "rust" => row.rust = du,
                 "kotlin" => row.kotlin = du,
+                "go-stream" => row.go_stream = du,
                 _ => unreachable!(),
             }
         }
@@ -433,14 +437,14 @@ fn bench_1() -> String {
 }
 fn bench_2() -> String {
     let mut out = String::new();
-    out.push_str("1000 100000\n");
+    out.push_str("100000\n");
     let e = vec!["1 1"; 100000];
     out.push_str(&e.join("\n"));
     out
 }
 fn bench_3() -> String {
     let mut out = String::new();
-    out.push_str("1000 1000\n");
+    out.push_str("1000\n");
     let s = vec!["a"; 1000].join("");
     let a = [s.as_str(); 1000];
     out.push_str(&a.join("\n"));

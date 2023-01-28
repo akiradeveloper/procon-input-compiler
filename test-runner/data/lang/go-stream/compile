@@ -1,0 +1,1 @@
+FILE=$@; cp $FILE /tmp/main.go; go build -o /tmp/main /tmp/main.go
