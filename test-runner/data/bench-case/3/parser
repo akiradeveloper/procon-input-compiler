@@ -1,2 +1,2 @@
-n: int, m: int
+n: int
 a: [(str); n]

@@ -251,6 +251,7 @@ pub mod stream {
 pub mod cpp;
 pub mod cpp_stream;
 pub mod csharp;
+pub mod go_stream;
 pub mod java;
 pub mod java_stream;
 pub mod kotlin;
