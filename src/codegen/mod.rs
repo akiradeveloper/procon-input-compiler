@@ -67,7 +67,26 @@ pub mod readline {
         fn read_line(bind: Bind) -> (Code, Index);
         fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code;
         fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code;
-        fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code;
+        fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
+            let l = Index(source.1 .0 .0);
+            let r = Index(source.1 .1 .0);
+            // Normal languages can add one by "+1".
+            // I won't support competitive programmers in no such languages.
+            let mid = Index(format!("{l}+1"));
+            let xs = source.0.clone();
+            let mut code = vec![];
+            let len_source = Slice(xs.clone(), Range(l, mid.clone()));
+            let arr_source = Slice(xs, Range(mid, r));
+            let n = new_var();
+            code.append(&mut Self::unit_type(
+                n.clone(),
+                &ast::UnitType::Int,
+                len_source,
+            ));
+            let len = Len(n.0);
+            code.append(&mut Self::array(bind, &ast::Array(ast.0, len), arr_source));
+            code
+        }
         fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error>;
         fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error>;
         fn tuple_like(bind: Bind, ast: &ast::TupleLike, source: Slice) -> Result<Code, Error> {
@@ -183,7 +202,14 @@ pub mod stream {
     pub trait Lang {
         fn unit_type(bind: Bind, ast: &ast::UnitType) -> Code;
         fn array(bind: Bind, ast: &ast::Array) -> Code;
-        fn list(bind: Bind, ast: &ast::List) -> Code;
+        fn list(bind: Bind, ast: &ast::List) -> Code {
+            let mut code = vec![];
+            let n = new_var();
+            code.append(&mut Self::unit_type(n.clone(), &ast::UnitType::Int));
+            let len = ast::Len(n.0);
+            code.append(&mut Self::array(bind, &ast::Array(ast.0, len)));
+            code
+        }
         fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error>;
         fn tuple(bind: Bind, elems: Vec<(&ast::TupleElem, Bind)>) -> Result<Code, Error>;
         fn tuple_like(bind: Bind, ast: &ast::TupleLike) -> Result<Code, Error> {

@@ -6,7 +6,7 @@ pub struct Line(pub Vec<Definition>);
 pub struct Var(pub String);
 #[derive(Debug)]
 pub struct Definition(pub Var, pub Type);
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum UnitType {
     Int,
     Int0,
