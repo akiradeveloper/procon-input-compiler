@@ -26,26 +26,6 @@ impl stream::Lang for JavaStream {
         code.push(format!("}}"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List) -> Code {
-        let mut code = vec![];
-
-        let n = Bind(ast.1 .0.to_owned());
-        code.push(format!("var {n} = input.nextInt();"));
-
-        let ty = typing::list(&ast);
-        code.push(format!("var {bind} = new {ty}();"));
-        let k = new_var();
-        code.push(format!("for (int {k}=0; {k}<{n}; {k}++) {{"));
-
-        let mut inner_code = vec![];
-        let x = new_var();
-        inner_code.append(&mut scan_unit_type(x.clone(), &ast.0));
-        inner_code.push(format!("{bind}.add({x});"));
-        append_code(&mut code, "\t", inner_code);
-
-        code.push(format!("}}"));
-        code
-    }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error> {
         let mut code = vec![];
         let n = Index(ast.1 .0.clone());

@@ -33,26 +33,6 @@ impl readline::Lang for Kotlin {
         code.push(format!("}}"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
-        let mut code = vec![];
-        let Slice(xs, range) = source;
-        let i = range.0;
-        let j = range.1;
-
-        let n = Bind(ast.1 .0.to_owned());
-        code.push(format!("val {n} = {xs}[{i}].toInt();"));
-
-        let ty = typing::list(&ast);
-        code.push(format!("val {bind} = {ty}();"));
-        let k = new_var();
-        code.push(format!("for ({k} in {i}+1 until {j}) {{"));
-        let x = new_var();
-        let mut inner_code = bind_unit_type(x.clone(), &ast.0, &format!("{xs}[{k}]"));
-        inner_code.push(format!("{bind}.add({x})"));
-        append_code(&mut code, "\t", inner_code);
-        code.push(format!("}}"));
-        code
-    }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error> {
         let mut code = vec![];
         let ty = format!("ArrayList<{}>", typing::tuple_like(&ast.0)?);

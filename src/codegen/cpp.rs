@@ -52,32 +52,6 @@ impl readline::Lang for Cpp {
         code.push(format!("}}"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
-        let mut code = vec![];
-        let Slice(xs, range) = source;
-        let i = range.0;
-        let j = range.1;
-
-        let n = Bind(ast.1 .0.to_owned());
-        code.push(format!("int {n} = atoi({xs}[{i}].c_str());"));
-
-        let ty = typing::list(&ast);
-        code.push(format!("{ty} {bind};"));
-        code.push(format!("{bind}.reserve({n});"));
-
-        let k = new_var();
-        code.push(format!("for (int {k}={i}+1; {k}<{j}; {k}++) {{"));
-
-        let mut inner_code = vec![];
-        let unit_val = new_var();
-        let v = format!("{xs}[{k}]");
-        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0, &v));
-        inner_code.push(format!("{bind}.push_back({unit_val});"));
-        append_code(&mut code, "\t", inner_code);
-
-        code.push(format!("}}"));
-        code
-    }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let mut code = vec![];
         let ty = format!("std::vector<{}>", typing::tuple_like(&ast.0));
