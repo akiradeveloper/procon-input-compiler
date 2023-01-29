@@ -123,35 +123,33 @@ a: [(int); n]
 
 ## Supported Languages
 
-- Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust, Kotlin
+- Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust, Kotlin, Go
 
 ### Mapping
 
-|name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust | Kotlin |
-|-|-|-|-|-|-|-|-|-|-|
-|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|`Int`|
-|floating number|float|`float`|`double`|`float`|`Float`|`Double`|`double`|`f64`|`Double`|
-|string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|`String`|
-|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|Not Supported|
-|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|
-|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|
-|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|
+|name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust | Kotlin | Go |
+|-|-|-|-|-|-|-|-|-|-|-|
+|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|`Int`|`int`|
+|floating number|float|`float`|`double`|`float`|`Float`|`Double`|`double`|`f64`|`Double`|`float64`|
+|string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|`String`|`string`|
+|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|Not Supported|Not Supported|
+|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|
+|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|
+|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|
 
 ### Performance (ms)
 
-| Bench# | Python | C++ | C++ (Stream) | Nim | Ruby | Java | Java (Stream) | C#  | Rust | Kotlin |
-|--------|--------|-----|--------------|-----|------|------|---------------|-----|------|--------|
-| 1      | 37     | 14  | 15           | 23  | 76   | 162  | 464           | 69  | 7    | 309    |
-| 2      | 121    | 61  | 22           | 69  | 209  | 141  | 271           | 152 | 23   | 296    |
-| 3      | 15     | 4   | 4            | 8   | 56   | 109  | 135           | 34  | 3    | 255    |
+| Bench# | Python | C++ | C++ (Stream) | Nim | Ruby | Java | Java (Stream) | C#  | Rust | Kotlin | Go (Stream) |
+|--------|--------|-----|--------------|-----|------|------|---------------|-----|------|--------|-------------|
+| 1      | 103    | 15  | 14           | 35  | 214  | 130  | 489           | 67  | 15   | 309    | 9           |
+| 2      | 156    | 63  | 22           | 74  | 318  | 137  | 272           | 140 | 62   | 296    | 13          |
+| 3      | 25     | 4   | 4            | 9   | 81   | 96   | 136           | 33  | 4    | 435    | 7           |
 
 
 - bench-case
   - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
   - [2](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/2/parser) (m=100000): Large Graph
   - [3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) (n=1000, m=1000): Large Matrix
-
-
 
 ## Architecuture
 
