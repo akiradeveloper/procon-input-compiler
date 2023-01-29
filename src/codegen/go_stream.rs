@@ -79,7 +79,7 @@ fn scan_unit_type(bind: Bind, ty: &ast::UnitType) -> Code {
             format!("{bind}, _ := strconv.Atoi(input.Text())")
         }
         ast::UnitType::Int0 => {
-            format!("{bind}, _ := strconv.Atoi(input.Text())")
+            format!("{bind}, _ := strconv.Atoi(input.Text()); {bind}--")
         }
         ast::UnitType::Float => {
             format!("{bind}, _ := strconv.ParseFloat(input.Text(), 64)")
