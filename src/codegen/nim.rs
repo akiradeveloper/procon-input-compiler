@@ -38,20 +38,6 @@ impl readline::Lang for Nim {
         code.push(format!("let {bind} = {xs}[{i}..<{j}].map({mapper})"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
-        let mut code = vec![];
-
-        let Slice(xs, range) = source;
-        let i = range.0;
-        let j = range.1;
-
-        let n = Bind(ast.1 .0.to_owned());
-        code.push(format!("let {n} = ({xs}[{i}]).parseInt"));
-
-        let mapper = unit_type_mapper(&ast.0);
-        code.push(format!("let {bind} = {xs}[{i}+1..<{j}].map({mapper})"));
-        code
-    }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, super::Error> {
         let mut code = vec![];
         let inner_ty = typing::tuple_like(&ast.0);

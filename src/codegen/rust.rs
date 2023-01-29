@@ -33,22 +33,6 @@ impl readline::Lang for Rust {
         code.push(format!("}}"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
-        let mut code = vec![];
-        let Slice(xs, range) = source;
-        let i = range.0;
-        let j = range.1;
-
-        let n = Bind(ast.1 .0.to_owned());
-        code.push(format!("let {n} = ({xs}[{i}]).parse::<i32>().unwrap();"));
-
-        code.push(format!("let mut {bind} = vec![];"));
-        code.push(format!("for i in (({i}+1) as usize)..(({j}) as usize) {{"));
-        let v = format!("{xs}[i]");
-        code.push(format!("\t{bind}.push({});", unit_type_convert(&ast.0, &v)));
-        code.push(format!("}}"));
-        code
-    }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error> {
         let mut code = vec![];
         code.push(format!("let mut {bind} = vec![];"));

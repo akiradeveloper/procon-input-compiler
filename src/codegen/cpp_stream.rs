@@ -27,28 +27,6 @@ impl stream::Lang for CppStream {
         code.push(format!("}}"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List) -> Code {
-        let mut code = vec![];
-        let ty = typing::list(&ast);
-
-        let n = Index(ast.1 .0.clone());
-        code.push(format!("int {n}; std::cin >> {n};"));
-
-        code.push(format!("{ty} {bind};"));
-        code.push(format!("{bind}.reserve({n});"));
-
-        let k = new_var();
-        code.push(format!("for (int {k}=0; {k}<{n}; ++{k}) {{"));
-
-        let mut inner_code = vec![];
-        let unit_val = new_var();
-        inner_code.append(&mut scan_unit_type(unit_val.clone(), &ast.0));
-        inner_code.push(format!("{bind}.push_back({unit_val});"));
-        append_code(&mut code, "\t", inner_code);
-
-        code.push(format!("}}"));
-        code
-    }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error> {
         let mut code = vec![];
         let ty = format!("std::vector<{}>", typing::tuple_like(&ast.0));

@@ -23,26 +23,6 @@ impl stream::Lang for GoStream {
         code.push(format!("}}"));
         code
     }
-    fn list(bind: Bind, ast: &ast::List) -> Code {
-        let mut code = vec![];
-        let inner_ty = typing::unit_type(&ast.0);
-
-        let n = Bind(ast.1 .0.to_owned());
-        code.push(format!("input.Scan()"));
-        code.push(format!("{n}, _ := strconv.Atoi(input.Text())"));
-
-        code.push(format!("{bind} := make([]{inner_ty}, 0, {n})"));
-        code.push(format!("for i := 0; i < {n}; i++ {{"));
-
-        let mut inner_code = vec![];
-        let v = new_var();
-        inner_code.append(&mut scan_unit_type(v.clone(), &ast.0));
-        inner_code.push(format!("{bind} = append({bind}, {v})"));
-
-        append_code(&mut code, "\t", inner_code);
-        code.push(format!("}}"));
-        code
-    }
     fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error> {
         let mut code = vec![];
         let n = Index(ast.1 .0.clone());

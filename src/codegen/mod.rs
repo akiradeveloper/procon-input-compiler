@@ -77,7 +77,7 @@ pub mod readline {
             let mut code = vec![];
             let len_source = Slice(xs.clone(), Range(l, mid.clone()));
             let arr_source = Slice(xs, Range(mid, r));
-            let n = new_var();
+            let n = Bind(ast.1 .0.clone());
             code.append(&mut Self::unit_type(
                 n.clone(),
                 &ast::UnitType::Int,
@@ -204,7 +204,7 @@ pub mod stream {
         fn array(bind: Bind, ast: &ast::Array) -> Code;
         fn list(bind: Bind, ast: &ast::List) -> Code {
             let mut code = vec![];
-            let n = new_var();
+            let n = Bind(ast.1 .0.clone());
             code.append(&mut Self::unit_type(n.clone(), &ast::UnitType::Int));
             let len = ast::Len(n.0);
             code.append(&mut Self::array(bind, &ast::Array(ast.0, len)));
