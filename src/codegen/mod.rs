@@ -68,23 +68,26 @@ pub mod readline {
         fn unit_type(bind: Bind, ast: &ast::UnitType, source: Slice) -> Code;
         fn array(bind: Bind, ast: &ast::Array, source: Slice) -> Code;
         fn list(bind: Bind, ast: &ast::List, source: Slice) -> Code {
-            let l = Index(source.1 .0 .0);
-            let r = Index(source.1 .1 .0);
+            let Slice(xs, range) = source;
+            let l = range.0;
+            let r = range.1;
+
             // Normal languages can add one by "+1".
             // I won't support competitive programmers in no such languages.
             let mid = Index(format!("{l}+1"));
-            let xs = source.0.clone();
             let mut code = vec![];
             let len_source = Slice(xs.clone(), Range(l, mid.clone()));
-            let arr_source = Slice(xs, Range(mid, r));
             let n = Bind(ast.1 .0.clone());
             code.append(&mut Self::unit_type(
                 n.clone(),
                 &ast::UnitType::Int,
                 len_source,
             ));
+
+            let arr_source = Slice(xs, Range(mid, r));
             let len = Len(n.0);
             code.append(&mut Self::array(bind, &ast::Array(ast.0, len), arr_source));
+
             code
         }
         fn matrix(bind: Bind, ast: &ast::Matrix) -> Result<Code, Error>;

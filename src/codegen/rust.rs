@@ -17,7 +17,7 @@ impl readline::Lang for Rust {
         let mut code = vec![];
         let Slice(xs, range) = source;
         let i = range.0;
-        let v = format!("{xs}[{i}]");
+        let v = format!("{xs}[({i}) as usize]");
         code.push(format!("let {bind} = {};", unit_type_convert(&ast, &v)));
         code
     }
@@ -27,7 +27,7 @@ impl readline::Lang for Rust {
         let i = range.0;
         let j = range.1;
         code.push(format!("let mut {bind} = vec![];"));
-        code.push(format!("for i in {i} as usize..{j} as usize {{"));
+        code.push(format!("for i in ({i}) as usize..({j}) as usize {{"));
         let v = format!("{xs}[i]");
         code.push(format!("\t{bind}.push({});", unit_type_convert(&ast.0, &v)));
         code.push(format!("}}"));
@@ -38,7 +38,7 @@ impl readline::Lang for Rust {
         code.push(format!("let mut {bind} = vec![];"));
         let n = &ast.1;
         let n = Index(n.0.clone());
-        code.push(format!("for i in 0..(({n}) as usize) {{"));
+        code.push(format!("for i in 0..({n}) as usize {{"));
 
         let line = new_var();
         let (read_line, m) = Self::read_line(line.clone());

@@ -93,7 +93,7 @@ impl TestTask<'_> {
         let t = Instant::now();
         let r = command.status()?;
         let compile_time = t.elapsed();
-        anyhow::ensure!(r.success());
+        anyhow::ensure!(r.success(), "failed to compile.");
 
         let input = File::open(&self.case.input)?;
         let mut command = Command::new("sh");
@@ -102,7 +102,7 @@ impl TestTask<'_> {
         let t = Instant::now();
         let r = command.status()?;
         let run_time = t.elapsed();
-        anyhow::ensure!(r.success());
+        anyhow::ensure!(r.success(), "failed to run.");
 
         Ok(ExecInfo {
             compile_time,

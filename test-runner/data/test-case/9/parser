@@ -1,2 +1,2 @@
 n: int
-v: [(float, [int0]); n]
+v: [([int0], float); n]
