@@ -285,6 +285,7 @@ pub mod nim;
 pub mod python;
 pub mod ruby;
 pub mod rust;
+pub mod swift;
 
 #[derive(Clone)]
 pub struct Bind(pub String);

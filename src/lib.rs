@@ -24,6 +24,7 @@ pub enum Lang {
     Rust,
     Kotlin,
     GoStream,
+    Swift,
 }
 
 pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
@@ -43,6 +44,7 @@ pub fn compile(lang: Lang, input: impl AsRef<str>) -> anyhow::Result<String> {
         Lang::Rust => codegen::readline::emit::<codegen::rust::Rust>(out),
         Lang::Kotlin => codegen::readline::emit::<codegen::kotlin::Kotlin>(out),
         Lang::GoStream => codegen::stream::emit::<codegen::go_stream::GoStream>(out),
+        Lang::Swift => codegen::readline::emit::<codegen::swift::Swift>(out),
     }?;
     Ok(out)
 }

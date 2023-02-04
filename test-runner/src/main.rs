@@ -62,6 +62,7 @@ impl TestTask<'_> {
                 "rust" => Compiler::compile(Compiler::Lang::Rust, &parser)?,
                 "kotlin" => Compiler::compile(Compiler::Lang::Kotlin, &parser)?,
                 "go-stream" => Compiler::compile(Compiler::Lang::GoStream, &parser)?,
+                "swift" => Compiler::compile(Compiler::Lang::Swift, &parser)?,
                 _ => unreachable!(),
             }
         };
@@ -399,6 +400,8 @@ struct BenchResult {
     kotlin: u64,
     #[tabled(rename = "Go (Stream)")]
     go_stream: u64,
+    #[tabled(rename = "Swift")]
+    swift: u64,
 }
 fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
     let mut rows: Vec<BenchResult> = vec![];
@@ -419,6 +422,7 @@ fn make_table(result: BTreeMap<u64, BTreeMap<String, Duration>>) -> String {
                 "rust" => row.rust = du,
                 "kotlin" => row.kotlin = du,
                 "go-stream" => row.go_stream = du,
+                "swift" => row.swift = du,
                 _ => unreachable!(),
             }
         }

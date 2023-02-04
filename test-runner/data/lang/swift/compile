@@ -1,0 +1,1 @@
+cp $@ /tmp/main.swift && swiftc -O -o /tmp/main -emit-executable /tmp/main.swift
