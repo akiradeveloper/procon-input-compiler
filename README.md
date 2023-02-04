@@ -123,27 +123,27 @@ a: [(int); n]
 
 ## Supported Languages
 
-- Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust, Kotlin, Go
+- Supported languages: Python, C++, Nim, Ruby, Java, C#, Rust, Kotlin, Go, Swift
 
 ### Mapping
 
-|name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust | Kotlin | Go |
-|-|-|-|-|-|-|-|-|-|-|-|
-|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|`Int`|`int`|
-|floating number|float|`float`|`double`|`float`|`Float`|`Double`|`double`|`f64`|`Double`|`float64`|
-|string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|`String`|`string`|
-|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|Not Supported|Not Supported|
-|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|
-|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|
-|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|
+|name | syntax | Python | C++ | Nim | Ruby | Java | C# | Rust | Kotlin | Go | Swift |
+|-|-|-|-|-|-|-|-|-|-|-|-|
+|integer number|int|`int`|`int`|`int`|`Integer`|`Integer`|`int`|`i32`|`Int`|`int`|`Int`|
+|floating number|float|`float`|`double`|`float`|`Float`|`Double`|`double`|`f64`|`Double`|`float64`|`Double`|
+|string|str|`str`|`string`|`string`|`String`|`String`|`string`|`String`|`String`|`string`|`String`|
+|tuple|(A,B)|`(A,B)`|`tuple<A,B>`|`(A,B)`|`[A,B]`|Not Supported|`ValueTuple<A,B>`|`(A,B)`|Not Supported|Not Supported|`(A,B)`|
+|array|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|`[A]`|
+|list|[A]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|`[A]`|
+|matrix|[A;n]|`[A]`|`vector<A>`|`seq[A]`|`[A]`|`ArrayList<A>`|`List<A>`|`Vec<A>`|`ArrayList<A>`|`[]A`|`[A]`|
 
 ### Performance (ms)
 
-| Bench# | Python | C++ | C++ (Stream) | Nim | Ruby | Java | Java (Stream) | C#  | Rust | Kotlin | Go (Stream) |
-|--------|--------|-----|--------------|-----|------|------|---------------|-----|------|--------|-------------|
-| 1      | 103    | 15  | 14           | 35  | 214  | 130  | 489           | 67  | 15   | 309    | 9           |
-| 2      | 156    | 63  | 22           | 74  | 318  | 137  | 272           | 140 | 62   | 296    | 13          |
-| 3      | 25     | 4   | 4            | 9   | 81   | 96   | 136           | 33  | 4    | 435    | 7           |
+| Bench# | Python | C++ | C++ (Stream) | Nim | Ruby | Java | Java (Stream) | C#  | Rust | Kotlin | Go (Stream) | Swift |
+|--------|--------|-----|--------------|-----|------|------|---------------|-----|------|--------|-------------|-------|
+| 1      | 48     | 24  | 24           | 35  | 94   | 134  | 622           | 71  | 16   | 364    | 21          | 51    |
+| 2      | 123    | 53  | 28           | 77  | 189  | 168  | 312           | 118 | 30   | 336    | 32          | 86    |
+| 3      | 26     | 11  | 10           | 19  | 63   | 116  | 142           | 41  | 8    | 312    | 19          | 58    |
 
 
 - bench-case
