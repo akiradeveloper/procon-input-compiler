@@ -141,15 +141,28 @@ a: [(int); n]
 
 | Bench# | Python | C++ | C++ (Stream) | Nim | Ruby | Java | Java (Stream) | C#  | Rust | Kotlin | Go (Stream) | Swift |
 |--------|--------|-----|--------------|-----|------|------|---------------|-----|------|--------|-------------|-------|
-| 1      | 48     | 24  | 24           | 35  | 94   | 134  | 622           | 71  | 16   | 364    | 21          | 51    |
-| 2      | 123    | 53  | 28           | 77  | 189  | 168  | 312           | 118 | 30   | 336    | 32          | 86    |
-| 3      | 26     | 11  | 10           | 19  | 63   | 116  | 142           | 41  | 8    | 312    | 19          | 58    |
+| 1      | 64     | 14  | 14           | 26  | 127  | 137  | 458           | 66  | 14   | 305    | 11          | 51    |
+| 2      | 124    | 63  | 22           | 73  | 208  | 141  | 277           | 143 | 24   | 314    | 14          | 113   |
+| 3      | 18     | 4   | 4            | 8   | 56   | 109  | 135           | 33  | 4    | 299    | 9           | 72    |
 
+#### bench 1
 
-- bench-case
-  - [1](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/1/parser) (n=100000): Large Array
-  - [2](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/2/parser) (n=100000): Large Graph
-  - [3](https://github.com/akiradeveloper/procon-input-compiler/blob/master/test-runner/data/bench-case/3/parser) (n=1000): Large Matrix
+```
+a: [float; 100000]
+```
+
+#### bench 2
+
+```
+e: [[int; 2]; 100000]
+```
+
+#### bench 3
+
+```
+a: [(str); 1000]
+```
+
 
 ## Architecuture
 
