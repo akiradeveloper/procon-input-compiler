@@ -24,8 +24,8 @@ a: [int; n]
 
 This is what Procon Input does.
 
-![スクリーンショット 2023-01-22 17 45 45](https://user-images.githubusercontent.com/785824/213907536-c5381fb4-2854-4208-8962-8f9d3859da5a.png)
-![スクリーンショット 2023-01-22 17 45 19](https://user-images.githubusercontent.com/785824/213907534-ae6c317e-d319-4868-9bad-687bb6d45285.png)
+![スクリーンショット 2023-02-09 19 26 00](https://user-images.githubusercontent.com/785824/217786742-a4a89d30-79d8-45cb-829c-d21719fb623c.png)
+![スクリーンショット 2023-02-09 19 26 09](https://user-images.githubusercontent.com/785824/217786757-7c27192a-0f4f-4dc6-bdb4-8a60126133ff.png)
 
 ## Syntax
 
